@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { pagesAPI, commentsAPI } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Edit, Trash2, Eye, MessageCircle, Calendar, User } from 'lucide-react';
 
 const AdminPanel = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState('pages');
   const [pages, setPages] = useState([]);
   const [comments, setComments] = useState([]);
@@ -70,6 +70,15 @@ const AdminPanel = () => {
     });
   };
 
+
+  const headersPages = language === 'ru'
+  ? ['Название', 'Автор', 'Категория', 'Дата', 'Комментарии', 'Действия']
+  : ['Title', 'Author', 'Category', 'Date', 'Comments', 'Actions'];
+
+  const headersComments = language === 'ru'
+  ? ['Комментарий', 'Автор', 'Страница', 'Дата', 'Действия']
+  : ['Comment', 'Author', 'Page', 'Date', 'Actions'];
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-64">
@@ -129,26 +138,12 @@ const AdminPanel = () => {
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
               <thead className="bg-gray-50 dark:bg-gray-800">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Страница
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Категория
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Автор
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Дата
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Комментарии
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Действия
-                  </th>
-                </tr>
+
+                      <tr>
+        {headersPages.map(h => (
+          <th key={h} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{h}</th>
+        ))}
+      </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-600 dark:bg-gray-700/90">
                 {pages.map((page) => (
@@ -216,23 +211,11 @@ const AdminPanel = () => {
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
               <thead className="bg-gray-50 dark:bg-gray-800">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Комментарий
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Автор
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Страница
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Дата
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Действия
-                  </th>
-                </tr>
+<tr>
+        {headersComments.map(h => (
+          <th key={h} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{h}</th>
+        ))}
+      </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-600 dark:bg-gray-700/90">
                 {comments.map((comment) => (
