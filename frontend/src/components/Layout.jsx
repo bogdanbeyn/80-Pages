@@ -34,7 +34,7 @@ const Layout = ({ children }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-red-900 dark:to-orange-900 transition-colors">
       {/* header */}
-      <header className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-lg border-b-2 border-red-200 dark:border-red-800">
+     <header className="relative z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-lg border-b-2 border-red-200 dark:border-red-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* logo */}
@@ -114,7 +114,7 @@ const Layout = ({ children }) => {
               </button>
 
               {/* language toggle */}
-              <div className="language-switcher z-100 relative" ref={languageMenuRef}>
+              <div className="language-switcher relative" ref={languageMenuRef}>
                 <button
                   onClick={() => setShowLanguageMenu(!showLanguageMenu)}
                   className="z-50 flex items-center space-x-1 p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -182,7 +182,7 @@ const Layout = ({ children }) => {
                   </Link>
                   <Link
                     to="/register"
-                    className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-red-700 hover:to-orange-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                    className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-red-700 hover:to-orange-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium "
                   >
                     {t('register')}
                   </Link>

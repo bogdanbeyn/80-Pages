@@ -11,7 +11,7 @@ const HomePage = () => {
       {/* hero */}
       <section className="text-center py-20 relative overflow-hidden">
         {/* background elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-red-100/50 via-orange-100/30 to-yellow-100/50 dark:from-red-900/20 dark:via-orange-900/10 dark:to-yellow-900/20 pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-gradient-to-br from-red-100/50 via-orange-100/30 to-yellow-100/50 dark:from-red-900/20 dark:via-orange-900/10 dark:to-yellow-900/20 pointer-events-none z-0"></div>
         <div className="absolute top-10 left-10 text-6xl opacity-10 dark:opacity-5">⭐</div>
         <div className="absolute top-20 right-20 text-4xl opacity-10 dark:opacity-5">🏆</div>
         <div className="absolute bottom-20 left-20 text-5xl opacity-10 dark:opacity-5">🛡️</div>
