@@ -8,6 +8,10 @@ export default defineConfig(({ mode }) => {
     server: {
       port: parseInt(env.PORT) || 5173,
     },
+    preview: {
+      port: 4173,
+      host: '0.0.0.0',
+  },
     plugins: [react()],
   };
 });
