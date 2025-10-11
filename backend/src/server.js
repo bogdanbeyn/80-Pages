@@ -39,6 +39,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: '[Server. MADE BY BOGDANBEYN] Server is running' });
 });
 
+app.get('/', (req, res) => {
+  res.send('Backend is alive');
+});
+
+
 // err handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
