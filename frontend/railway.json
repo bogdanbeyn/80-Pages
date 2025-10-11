@@ -1,4 +1,10 @@
 {
+  "build": {
+    "command": "npm run build"
+  },
+  "start": {
+    "command": "npm run preview"
+  },
   "dependencies": {
     "backend": "backend"
   }
