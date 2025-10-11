@@ -6,13 +6,23 @@ import { commentsAPI } from '../services/api';
 
 const CommentList = ({ comments, pageId, onCommentAdded }) => {
   const { isAuthenticated } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const formatDate = (dateString) => {
+  const formatDateRu = (dateString) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const formatDateEn = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-EN', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -67,7 +77,7 @@ const CommentList = ({ comments, pageId, onCommentAdded }) => {
             </h4>
             <div className="flex items-center space-x-1 text-sm text-gray-500">
               <Calendar className="h-3 w-3" />
-              <span>{formatDate(comment.createdAt)}</span>
+              <span>{language === 'ru' ? formatDateRu(comment.createdAt) : formatDateEn(comment.createdAt)}</span>
             </div>
           </div>
           

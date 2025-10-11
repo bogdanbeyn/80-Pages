@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Calendar, User, MessageCircle } from 'lucide-react';
 import { pagesAPI, categoriesAPI } from '../services/api';
+import { useLanguage } from '../contexts/LanguageContext';
 import PageCard from '../components/PageCard';
 
 const PageList = () => {
+  const { t } = useLanguage();
   const [pages, setPages] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -92,11 +94,10 @@ const PageList = () => {
       {/* head */}
       <div className="text-center">
         <h1 className="text-4xl font-bold text-light mb-4">
-          Исторические страницы
+          {t('pagesTitle')}
         </h1>
         <p className="text-lg dark:text-gray-300 max-w-2xl mx-auto">
-          Исследуйте 80 важных страниц истории России. Каждая страница рассказывает 
-          уникальную историю о событиях, людях и местах, которые сформировали нашу страну.
+          {t('pagesDescription')}
         </p>
       </div>
 
@@ -109,7 +110,7 @@ const PageList = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 " />
               <input
                 type="text"
-                placeholder="Поиск по названию или содержанию..."
+                placeholder={t('pagesSearch')}
                 value={filters.search}
                 onChange={handleSearchChange}
                 className="input-field pl-10 dark:bg-gray-700/90"
@@ -126,7 +127,7 @@ const PageList = () => {
                 onChange={handleCategoryChange}
                 className="input-field pl-10 appearance-none dark:bg-gray-700/90"
               >
-                <option value="">Все категории</option>
+                <option value="">{t('pagesFilterByCategory')}</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name} ({category._count.pages})
@@ -141,11 +142,11 @@ const PageList = () => {
       {/* results info */}
       <div className="flex justify-between items-center">
         <p className="text-gray-600 dark:text-gray-300">
-          Найдено страниц: <span className="font-semibold">{pagination.total || 0}</span>
+          {t('pagesFound')}: <span className="font-semibold">{pagination.total || 0}</span>
         </p>
         {filters.search && (
           <p className="text-sm text-gray-500">
-            Поиск: "{filters.search}"
+            {t('search')}: "{filters.search}"
           </p>
         )}
       </div>
@@ -167,7 +168,7 @@ const PageList = () => {
                 disabled={filters.page === 1}
                 className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800/90 dark:text-gray-300 dark:border-gray-600"
               >
-                Назад
+                {t('back')}
               </button>
               
               {Array.from({ length: Math.min(5, pagination.pages) }, (_, i) => {
@@ -192,7 +193,7 @@ const PageList = () => {
                 disabled={filters.page === pagination.pages}
                 className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800/90 dark:border-gray-600 dark:text-gray-300"
               >
-                Вперед
+                {t('next')}
               </button>
             </div>
           )}
@@ -201,10 +202,10 @@ const PageList = () => {
         <div className="text-center py-16">
           <div className="text-gray-400 text-6xl mb-4">📚</div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            Страницы не найдены
+            {t('noPages')}
           </h3>
           <p className="text-gray-600">
-            Попробуйте изменить параметры поиска или фильтры
+            {t('noPagesDesc')}
           </p>
         </div>
       )}

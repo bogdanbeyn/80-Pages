@@ -1,26 +1,48 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, User, MessageCircle, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const PageCard = ({ page }) => {
-  const formatDate = (dateString) => {
+  const { t, language } = useLanguage();
+  const formatDateRu = (dateString) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     });
   };
+  const formatDateEn = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-EN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const categoryMap = {
+    city: { ru: 'Город', en: 'City', icon: '🏰' },
+    hero: { ru: 'Герой', en: 'Hero', icon: '👑' },
+    event: { ru: 'Событие', en: 'Event', icon: '⚔️' },
+    letter: { ru: 'Письмо', en: 'Letter', icon: '📜' },
+    monument: { ru: 'Памятник', en: 'Monument', icon: '🗿' },
+    artifact: { ru: 'Артефакт', en: 'Artifact', icon: '💎' },
+  };
+
+  const normalize = (s) => String(s || '').trim().toLowerCase();
+
+  const getCategoryKey = (name) => {
+    const n = normalize(name);
+    const found = Object.keys(categoryMap).find((k) => {
+      const { ru, en } = categoryMap[k];
+      return [normalize(ru), normalize(en)].includes(n);
+    });
+    return found || 'city';
+  };
 
   const getCategoryIcon = (categoryName) => {
-    const icons = {
-      'Город': '🏰',
-      'Герой': '👑',
-      'Событие': '⚔️',
-      'Письмо': '📜',
-      'Памятник': '🗿',
-      'Артефакт': '💎',
-    };
-    return icons[categoryName] || '📄';
+    const key = getCategoryKey(categoryName);
+    return categoryMap[key]?.icon || '📄';
   };
 
   return (
@@ -49,7 +71,10 @@ const PageCard = ({ page }) => {
           {/* ctg badge */}
           <div className="absolute top-3 left-3">
             <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-gray-900/90 dark:text-gray-300">
-              {page.category.name}
+               {(() => {
+                const key = getCategoryKey(page.category?.name);
+                return language === 'ru' ? categoryMap[key].ru : categoryMap[key].en;
+              })()}
             </span>
           </div>
         </div>
@@ -73,7 +98,7 @@ const PageCard = ({ page }) => {
               </div>
               <div className="flex items-center space-x-1">
                 <Calendar className="h-4 w-4" />
-                <span>{formatDate(page.createdAt)}</span>
+                <span>{language === 'ru' ? formatDateRu(page.createdAt) : formatDateEn(page.createdAt)}</span>
               </div>
             </div>
             
@@ -87,7 +112,7 @@ const PageCard = ({ page }) => {
 
           {/* read more */}
           <div className="mt-4 flex items-center text-primary-600 font-medium group-hover:text-primary-700">
-            <span>Читать далее</span>
+            <span>{t('readMore')}</span>
             <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
           </div>
         </div>

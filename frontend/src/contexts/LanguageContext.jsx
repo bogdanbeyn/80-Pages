@@ -31,11 +31,14 @@ const translations = {
     back: 'Назад',
     next: 'Далее',
     previous: 'Назад',
+    search: 'Поиск',
+    gpw: 'Великая Отечественная Война',
     
     // Pages
     pageTitle: '80 Страниц Победы',
     pageSubtitle: 'Изучайте историю Великой Отечественной Войны',
     noPages: 'Страницы не найдены',
+    noPagesDesc: 'Попробуйте изменить параметры поиска или фильтры',
     pageNotFound: 'Страница не найдена',
     backToList: 'Вернуться к списку',
     author: 'Автор',
@@ -48,7 +51,13 @@ const translations = {
     writeComment: 'Напишите комментарий...',
     writeReply: 'Напишите ответ...',
     noComments: 'Пока нет комментариев. Будьте первым!',
-    
+    pagesTitle: 'Исторические страницы',
+    pagesDescription: 'Исследуйте 80 важных страниц истории победы. Каждая страница рассказывает уникальную историю о событиях, людях и местах, которые сформировали нашу страну.',
+    pagesSearch: 'Поиск по названию или содержанию...',
+    pagesFilterByCategory: 'Все категории',
+    pagesFound: 'Найдено страниц',
+    readMore: 'Читать далее',
+
     // Categories
     city: 'Город',
     hero: 'Герой',
@@ -102,11 +111,14 @@ const translations = {
     back: 'Back',
     next: 'Next',
     previous: 'Previous',
+    search: 'Search',
+    gpw: 'Great Patriotic War',
     
     // Pages
     pageTitle: '80 Pages of Victory',
     pageSubtitle: 'Learn the history of the Great Patriotic War',
     noPages: 'No pages found',
+    noPagesDesc: 'Try changing the search terms or filters',
     pageNotFound: 'Page not found',
     backToList: 'Back to list',
     author: 'Author',
@@ -119,6 +131,12 @@ const translations = {
     writeComment: 'Write a comment...',
     writeReply: 'Write a reply...',
     noComments: 'No comments yet. Be the first!',
+    pagesTitle: 'Historical Pages',
+    pagesDescription: 'Explore 80 significant pages of victory history. Each page tells a unique story about events, people, and places that shaped our country.',
+    pagesSearch: 'Search by title or content...',
+    pagesFilterByCategory: 'All categories',
+    pagesFound: 'Pages found',
+    readMore: 'Read more',
     
     // Categories
     city: 'City',
@@ -135,7 +153,7 @@ const translations = {
     confirmPassword: 'Confirm Password',
     alreadyHaveAccount: 'Already have an account?',
     dontHaveAccount: "Don't have an account?",
-    
+
     // Footer
     openSource: 'This project is distributed with open source code.',
     
