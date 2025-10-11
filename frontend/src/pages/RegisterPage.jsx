@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 
 const RegisterPage = () => {
   const { register, isAuthenticated, error, clearError } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -97,29 +99,37 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-red-900 dark:to-orange-900">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Создать аккаунт
+          <div className="flex items-center justify-center space-x-2 mb-6">
+            <div className="h-12 w-12 bg-gradient-to-br from-red-600 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-white text-xl font-bold">80</span>
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+              {t('pageTitle')}
+            </span>
+          </div>
+          <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
+            {t('register')}
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Или{' '}
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            {t('alreadyHaveAccount')}{' '}
             <Link
               to="/login"
-              className="font-medium text-primary-600 hover:text-primary-500"
+              className="font-medium text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300"
             >
-              войдите в существующий аккаунт
+              {t('login')}
             </Link>
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Имя
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('name')}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -134,18 +144,18 @@ const RegisterPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   className={`input-field pl-10 ${validationErrors.name ? 'border-red-300 focus:ring-red-500' : ''}`}
-                  placeholder="Введите ваше имя"
+                  placeholder={t('name')}
                 />
               </div>
               {validationErrors.name && (
-                <p className="mt-1 text-sm text-red-600">{validationErrors.name}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{validationErrors.name}</p>
               )}
             </div>
 
             {/* email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email адрес
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('email')}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -160,18 +170,18 @@ const RegisterPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className={`input-field pl-10 ${validationErrors.email ? 'border-red-300 focus:ring-red-500' : ''}`}
-                  placeholder="Введите ваш email"
+                  placeholder={t('email')}
                 />
               </div>
               {validationErrors.email && (
-                <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{validationErrors.email}</p>
               )}
             </div>
 
             {/* pass */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Пароль
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('password')}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -186,7 +196,7 @@ const RegisterPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   className={`input-field pl-10 pr-10 ${validationErrors.password ? 'border-red-300 focus:ring-red-500' : ''}`}
-                  placeholder="Введите пароль"
+                  placeholder={t('password')}
                 />
                 <button
                   type="button"
@@ -201,14 +211,14 @@ const RegisterPage = () => {
                 </button>
               </div>
               {validationErrors.password && (
-                <p className="mt-1 text-sm text-red-600">{validationErrors.password}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{validationErrors.password}</p>
               )}
             </div>
 
             {/* conf pass */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Подтвердите пароль
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('confirmPassword')}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -223,7 +233,7 @@ const RegisterPage = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className={`input-field pl-10 pr-10 ${validationErrors.confirmPassword ? 'border-red-300 focus:ring-red-500' : ''}`}
-                  placeholder="Подтвердите пароль"
+                  placeholder={t('confirmPassword')}
                 />
                 <button
                   type="button"
@@ -238,15 +248,15 @@ const RegisterPage = () => {
                 </button>
               </div>
               {validationErrors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">{validationErrors.confirmPassword}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{validationErrors.confirmPassword}</p>
               )}
             </div>
           </div>
 
           {/* err msg */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-sm text-red-600">{error}</p>
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
             </div>
           )}
 
@@ -255,15 +265,15 @@ const RegisterPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-red-600 to-orange-600 text-white font-medium py-3 px-4 rounded-lg hover:from-red-700 hover:to-orange-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center justify-center space-x-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Создание аккаунта...</span>
+                  <span>{t('loading')}</span>
                 </div>
               ) : (
-                'Создать аккаунт'
+                t('register')
               )}
             </button>
           </div>

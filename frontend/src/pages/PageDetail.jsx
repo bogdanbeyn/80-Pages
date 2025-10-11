@@ -74,14 +74,14 @@ const PageDetail = () => {
       {/* back btn */}
       <Link
         to="/pages"
-        className="inline-flex items-center space-x-2 text-gray-600 hover:text-primary-600 transition-colors"
+        className="inline-flex items-center space-x-2 text-gray-600 hover:text-primary-600 transition-colors dark:text-gray-300 dark:hover:text-primary-600"
       >
         <ArrowLeft className="h-4 w-4" />
         <span>Назад к списку</span>
       </Link>
 
       {/* art head */}
-      <article className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <article className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800/90 dark:border-gray-600">
         {/* img */}
         <div className="relative h-64 md:h-80 bg-gray-200">
           {page.imagePath ? (
@@ -96,7 +96,7 @@ const PageDetail = () => {
             />
           ) : null}
           <div 
-            className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center text-8xl"
+            className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center text-8xl "
             style={{ display: page.imagePath ? 'none' : 'flex' }}
           >
             {getCategoryIcon(page.category.name)}
@@ -104,7 +104,7 @@ const PageDetail = () => {
           
           {/* ctg badge */}
           <div className="absolute top-4 left-4">
-            <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-sm font-medium px-3 py-1 rounded-full">
+            <span className="bg-white backdrop-blur-sm text-gray-800 text-sm font-medium px-3 py-1 rounded-full dark:bg-gray-900/90 dark: text-gray-300">
               {page.category.name}
             </span>
           </div>
@@ -113,12 +113,12 @@ const PageDetail = () => {
         {/* content */}
         <div className="p-8">
           {/* title */}
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 dark:text-gray-100">
             {page.title}
           </h1>
 
           {/* meta */}
-          <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-8 pb-6 border-b border-gray-200">
+          <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-8 pb-6 border-b border-gray-200 dark:text-gray-400">
             <div className="flex items-center space-x-2">
               <User className="h-4 w-4" />
               <span>Автор: {page.createdBy.name}</span>
@@ -137,28 +137,25 @@ const PageDetail = () => {
 
           {/* art content */}
           <div className="prose prose-lg max-w-none">
-            <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+            <div className="text-gray-800 leading-relaxed whitespace-pre-wrap dark:text-gray-300">
               {page.content}
             </div>
           </div>
 
-          {/* like btn */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <button className="flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors">
-              <Heart className="h-5 w-5" />
-              <span>Понравилось</span>
-            </button>
-          </div>
         </div>
       </article>
 
       {/* comment sect */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 dark:bg-gray-800/90 dark:border-gray-600">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 dark:text-gray-300">
           Комментарии ({page.comments?.length || 0})
         </h2>
         
-        <CommentList comments={page.comments || []} />
+        <CommentList 
+          comments={page.comments || []} 
+          pageId={page.id} 
+          onCommentAdded={fetchPage} 
+        />
         <CommentForm pageId={page.id} onCommentAdded={fetchPage} />
       </div>
     </div>

@@ -63,6 +63,7 @@ export const categoriesAPI = {
 // api methods for comments
 export const commentsAPI = {
   getComments: (pageId) => api.get(`/comments/page/${pageId}`),
+  getAllComments: () => api.get('/comments/all'),
   createComment: (commentData) => api.post('/comments', commentData),
   deleteComment: (id) => api.delete(`/comments/${id}`),
 };

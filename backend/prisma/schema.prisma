@@ -45,8 +45,11 @@ model Comment {
   text      String
   pageId    Int
   userId    Int
+  parentId  Int?
   page      Page     @relation(fields: [pageId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
   createdAt DateTime @default(now())
 }
 

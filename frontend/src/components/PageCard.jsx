@@ -48,7 +48,7 @@ const PageCard = ({ page }) => {
           
           {/* ctg badge */}
           <div className="absolute top-3 left-3">
-            <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-medium px-2 py-1 rounded-full">
+            <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-gray-900/90 dark:text-gray-300">
               {page.category.name}
             </span>
           </div>
@@ -56,11 +56,11 @@ const PageCard = ({ page }) => {
 
         {/* content */}
         <div className="p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors">
+          <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors dark:text-gray-300">
             {page.title}
           </h3>
           
-          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+          <p className="text-gray-600 text-sm mb-4 line-clamp-3 dark:text-gray-400">
             {page.content}
           </p>
 

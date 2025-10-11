@@ -8,8 +8,31 @@ const router = express.Router();
 // валид
 const commentValidation = [
   body('text').trim().isLength({ min: 1, max: 1000 }).withMessage('Comment must be between 1 and 1000 characters'),
-  body('pageId').isInt({ min: 1 }).withMessage('Valid page ID is required')
+  body('pageId').isInt({ min: 1 }).withMessage('Valid page ID is required'),
+  body('parentId').optional().isInt({ min: 1 }).withMessage('Valid parent comment ID is required')
 ];
+
+// все комментарии (для админки)
+router.get('/all', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const comments = await prisma.comment.findMany({
+      include: {
+        user: {
+          select: { id: true, name: true }
+        },
+        page: {
+          select: { id: true, title: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    res.json(comments);
+  } catch (error) {
+    console.error('Get all comments error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // комментарии для страницы
 router.get('/page/:pageId', async (req, res) => {
@@ -21,10 +44,21 @@ router.get('/page/:pageId', async (req, res) => {
     }
 
     const comments = await prisma.comment.findMany({
-      where: { pageId },
+      where: { 
+        pageId,
+        parentId: null // только родительские комментарии
+      },
       include: {
         user: {
           select: { id: true, name: true }
+        },
+        replies: {
+          include: {
+            user: {
+              select: { id: true, name: true }
+            }
+          },
+          orderBy: { createdAt: 'asc' }
         }
       },
       orderBy: { createdAt: 'desc' }
@@ -48,9 +82,9 @@ router.post('/', authMiddleware, commentValidation, async (req, res) => {
       });
     }
 
-    const { text, pageId } = req.body;
+    const { text, pageId, parentId } = req.body;
 
-    // существует ли
+    // существует ли страница
     const page = await prisma.page.findUnique({
       where: { id: parseInt(pageId) }
     });
@@ -59,11 +93,23 @@ router.post('/', authMiddleware, commentValidation, async (req, res) => {
       return res.status(404).json({ message: 'Page not found' });
     }
 
+    // если это ответ на комментарий, проверяем существование родительского комментария
+    if (parentId) {
+      const parentComment = await prisma.comment.findUnique({
+        where: { id: parseInt(parentId) }
+      });
+
+      if (!parentComment) {
+        return res.status(404).json({ message: 'Parent comment not found' });
+      }
+    }
+
     const comment = await prisma.comment.create({
       data: {
         text,
         pageId: parseInt(pageId),
-        userId: req.user.id
+        userId: req.user.id,
+        parentId: parentId ? parseInt(parentId) : null
       },
       include: {
         user: {

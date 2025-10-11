@@ -91,28 +91,28 @@ const PageList = () => {
     <div className="space-y-8">
       {/* head */}
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl font-bold text-light mb-4">
           Исторические страницы
         </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p className="text-lg dark:text-gray-300 max-w-2xl mx-auto">
           Исследуйте 80 важных страниц истории России. Каждая страница рассказывает 
           уникальную историю о событиях, людях и местах, которые сформировали нашу страну.
         </p>
       </div>
 
       {/* filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-800/90 rounded-xl shadow-sm border border-gray-200 p-6 dark:border-gray-600">
         <div className="flex flex-col md:flex-row gap-4">
           {/* search */}
           <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div className="relative ">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 " />
               <input
                 type="text"
                 placeholder="Поиск по названию или содержанию..."
                 value={filters.search}
                 onChange={handleSearchChange}
-                className="input-field pl-10"
+                className="input-field pl-10 dark:bg-gray-700/90"
               />
             </div>
           </div>
@@ -124,7 +124,7 @@ const PageList = () => {
               <select
                 value={filters.categoryId}
                 onChange={handleCategoryChange}
-                className="input-field pl-10 appearance-none"
+                className="input-field pl-10 appearance-none dark:bg-gray-700/90"
               >
                 <option value="">Все категории</option>
                 {categories.map((category) => (
@@ -140,7 +140,7 @@ const PageList = () => {
 
       {/* results info */}
       <div className="flex justify-between items-center">
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-300">
           Найдено страниц: <span className="font-semibold">{pagination.total || 0}</span>
         </p>
         {filters.search && (
@@ -165,7 +165,7 @@ const PageList = () => {
               <button
                 onClick={() => handlePageChange(filters.page - 1)}
                 disabled={filters.page === 1}
-                className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800/90 dark:text-gray-300 dark:border-gray-600"
               >
                 Назад
               </button>
@@ -179,7 +179,7 @@ const PageList = () => {
                     className={`px-3 py-2 text-sm font-medium rounded-lg ${
                       filters.page === pageNum
                         ? 'bg-primary-600 text-white'
-                        : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
+                        : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800/90 dark:border-gray-600 dark:text-gray-300'
                     }`}
                   >
                     {pageNum}
@@ -190,7 +190,7 @@ const PageList = () => {
               <button
                 onClick={() => handlePageChange(filters.page + 1)}
                 disabled={filters.page === pagination.pages}
-                className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800/90 dark:border-gray-600 dark:text-gray-300"
               >
                 Вперед
               </button>

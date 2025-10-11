@@ -86,9 +86,18 @@ router.get('/:id', async (req, res) => {
           select: { id: true, name: true }
         },
         comments: {
+          where: { parentId: null }, // только родительские комментарии
           include: {
             user: {
               select: { id: true, name: true }
+            },
+            replies: {
+              include: {
+                user: {
+                  select: { id: true, name: true }
+                }
+              },
+              orderBy: { createdAt: 'asc' }
             }
           },
           orderBy: { createdAt: 'desc' }
@@ -107,8 +116,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// создание (только авториз)
-router.post('/', authMiddleware, pageValidation, async (req, res) => {
+// создание (только admin)
+router.post('/', authMiddleware, adminOnly, pageValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

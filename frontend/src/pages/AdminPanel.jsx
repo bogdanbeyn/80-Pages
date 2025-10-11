@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { pagesAPI, commentsAPI } from '../services/api';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Edit, Trash2, Eye, MessageCircle, Calendar, User } from 'lucide-react';
 
 const AdminPanel = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('pages');
   const [pages, setPages] = useState([]);
   const [comments, setComments] = useState([]);
@@ -20,20 +22,9 @@ const AdminPanel = () => {
         const response = await pagesAPI.getPages({ limit: 100 });
         setPages(response.data.pages);
       } else {
-        // чтобы получить комменты, мы сначала фетчим все страницы
-        const pagesResponse = await pagesAPI.getPages({ limit: 100 });
-        const allComments = [];
-        
-        for (const page of pagesResponse.data.pages) {
-          if (page.comments && page.comments.length > 0) {
-            allComments.push(...page.comments.map(comment => ({
-              ...comment,
-              pageTitle: page.title
-            })));
-          }
-        }
-        
-        setComments(allComments);
+        // получаем все комментарии через новый API
+        const response = await commentsAPI.getAllComments();
+        setComments(response.data);
       }
     } catch (err) {
       setError('Ошибка при загрузке данных');
@@ -91,34 +82,36 @@ const AdminPanel = () => {
     <div className="space-y-8">
       {/* head */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Панель администратора</h1>
-        <p className="text-gray-600 mt-2">
-          Управление страницами и комментариями
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          {t('admin')} {t('panel')}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
+          {t('managePagesAndComments')}
         </p>
       </div>
 
       {/* tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-200 dark:border-gray-600">
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('pages')}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'pages'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-red-500 text-red-600 dark:text-red-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300'
             }`}
           >
-            Страницы ({pages.length})
+            {t('pages')} ({pages.length})
           </button>
           <button
             onClick={() => setActiveTab('comments')}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'comments'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-red-500 text-red-600 dark:text-red-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300'
             }`}
           >
-            Комментарии ({comments.length})
+            {t('comments')} ({comments.length})
           </button>
         </nav>
       </div>
@@ -132,10 +125,10 @@ const AdminPanel = () => {
 
       {/* content */}
       {activeTab === 'pages' ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800/90 dark:border-gray-600">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Страница
@@ -157,9 +150,9 @@ const AdminPanel = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-600 dark:bg-gray-700/90">
                 {pages.map((page) => (
-                  <tr key={page.id} className="hover:bg-gray-50">
+                  <tr key={page.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
@@ -176,24 +169,24 @@ const AdminPanel = () => {
                           )}
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900 max-w-xs truncate">
+                          <div className="text-sm font-medium text-gray-900 max-w-xs truncate dark:text-gray-300">
                             {page.title}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-gray-500 dark:text-gray-800">
                         {page.category.name}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-400">
                       {page.createdBy.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {formatDate(page.createdAt)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {page._count?.comments || 0}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -219,10 +212,10 @@ const AdminPanel = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800/90 dark:border-gray-600">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Комментарий
@@ -241,21 +234,21 @@ const AdminPanel = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-600 dark:bg-gray-700/90">
                 {comments.map((comment) => (
-                  <tr key={comment.id} className="hover:bg-gray-50">
+                  <tr key={comment.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 max-w-md">
+                      <div className="text-sm text-gray-900 max-w-md dark:text-gray-300 ">
                         {comment.text}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-400 ">
                       {comment.user.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {comment.pageTitle}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {comment.page.title}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {formatDate(comment.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
