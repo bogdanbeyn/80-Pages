@@ -214,7 +214,7 @@ const Layout = ({ children }) => {
               &copy; 2025 <a href='https://github.com/bogdanbeyn' className='text-red-600 dark:text-red-400 hover:underline'>Bogdan Beyn</a>
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-500">
-              <a href='https://github.com/bogdanbeyn/eightypages' className='hover:underline'>
+              <a href='https://github.com/bogdanbeyn/80-Pages' className='hover:underline'>
                 {t('openSource')}
               </a>
             </p>
