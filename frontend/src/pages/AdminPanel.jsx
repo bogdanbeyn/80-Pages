@@ -60,8 +60,17 @@ const AdminPanel = () => {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDateRu = (dateString) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+  const formatDateEn = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-EN', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -170,16 +179,18 @@ const AdminPanel = () => {
                         </div>
                       </div>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-400">
+                      {page.createdBy.name}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-gray-500 dark:text-gray-800">
                         {page.category.name}
                       </span>
+
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-400">
-                      {page.createdBy.name}
-                    </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {formatDate(page.createdAt)}
+                      {language === 'ru' ? formatDateRu(page.createdAt) : formatDateEn(page.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {page._count?.comments || 0}
@@ -232,7 +243,7 @@ const AdminPanel = () => {
                       {comment.page.title}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {formatDate(comment.createdAt)}
+                      {language === 'ru' ? formatDateRu(comment.createdAt) : formatDateEn(comment.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
@@ -257,13 +268,13 @@ const AdminPanel = () => {
           <div className="text-gray-400 text-6xl mb-4">
             {activeTab === 'pages' ? '📄' : '💬'}
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            {activeTab === 'pages' ? 'Нет страниц' : 'Нет комментариев'}
+          <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-gray-100">
+            {activeTab === 'pages' ? t('noPages') : t('noCommentsFnd')}
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-300">
             {activeTab === 'pages' 
-              ? 'Страницы будут отображаться здесь после создания'
-              : 'Комментарии будут отображаться здесь после добавления'
+              ? t('noPagesDescAdm')
+              : t('noCommentsDescAdm')
             }
           </p>
         </div>

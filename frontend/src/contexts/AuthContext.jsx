@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import { authAPI } from '../services/api';
+import { useLanguage } from './LanguageContext';
 
 const AuthContext = createContext();
 
@@ -57,6 +58,7 @@ const authReducer = (state, action) => {
 };
 
 export const AuthProvider = ({ children }) => {
+  const {t, language} = useLanguage();
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   // проверка токена
@@ -97,9 +99,21 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login failed';
-      dispatch({ type: 'AUTH_FAILURE', payload: errorMessage });
-      return { success: false, error: errorMessage };
+    const rawMessage = error.response?.data?.message;
+    let translatedMessage;
+
+    switch (rawMessage) {
+      case 'User not found':
+        translatedMessage = t('userNotFound');
+        break;
+      case 'Wrong password':
+        translatedMessage = t('wrongPassword');
+        break;
+      default:
+        translatedMessage = t['login failed'] || 'Login failed';
+      }
+      dispatch({ type: 'AUTH_FAILURE', payload: translatedMessage });
+      return { success: false, error: translatedMessage };
     }
   }, []);
 

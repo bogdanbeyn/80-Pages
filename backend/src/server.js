@@ -18,8 +18,8 @@ app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://frontend-production-39fb.up.railway.app'] 
-    : ['http://localhost:5173', 'http://localhost:3000'],
-  credentials: true
+    : ['http://localhost:4173', 'http://localhost:5000'],
+  credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));

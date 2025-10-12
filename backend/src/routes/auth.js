@@ -67,7 +67,6 @@ router.post('/register', registerValidation, async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
-
     res.status(201).json({
       message: 'User created successfully',
       user,
@@ -98,13 +97,13 @@ router.post('/login', loginValidation, async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'User not found' });
     }
 
     // проверка пароля
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Wrong password' });
     }
 
     // генерация jwt
@@ -113,7 +112,6 @@ router.post('/login', loginValidation, async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
-
     res.json({
       message: 'Login successful',
       user: {

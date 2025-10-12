@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Calendar, User, MessageCircle } from 'lucide-react';
 import { pagesAPI, categoriesAPI } from '../services/api';
@@ -17,14 +17,35 @@ const PageList = () => {
     page: 1,
   });
   const [pagination, setPagination] = useState({});
+  const inputRef = useRef(null);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [isFetching, setIsFetching] = useState(false);
+  const isFirstRun = useRef(true);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setFilters(prev => ({
+        ...prev,
+        search: debouncedSearch,
+        page: 1,
+      }));
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [debouncedSearch]);
+
+    useEffect(() => {
     fetchData();
   }, [filters]);
 
   const fetchData = async () => {
+    const isInitial = isFirstRun.current;
     try {
-      setLoading(true);
+      if (isInitial) {
+        setLoading(true);
+      } else {
+        setIsFetching(true);
+      }
       const [pagesResponse, categoriesResponse] = await Promise.all([
         pagesAPI.getPages(filters),
         categoriesAPI.getCategories(),
@@ -37,17 +58,20 @@ const PageList = () => {
       setError('Ошибка при загрузке данных');
       console.error('Error fetching data:', err);
     } finally {
-      setLoading(false);
+if (isInitial) {
+        setLoading(false);
+        isFirstRun.current = false;
+      } else {
+        setIsFetching(false);
+      }
     }
   };
 
   const handleSearchChange = (e) => {
-    setFilters(prev => ({
-      ...prev,
-      search: e.target.value,
-      page: 1,
-    }));
+    const value = e.target.value;
+    setDebouncedSearch(value);
   };
+
 
   const handleCategoryChange = (e) => {
     setFilters(prev => ({
@@ -65,7 +89,7 @@ const PageList = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (loading) {
+if (loading && pages.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -109,12 +133,16 @@ const PageList = () => {
             <div className="relative ">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 " />
               <input
+                ref={inputRef}
                 type="text"
                 placeholder={t('pagesSearch')}
-                value={filters.search}
+                value={debouncedSearch}
                 onChange={handleSearchChange}
                 className="input-field pl-10 dark:bg-gray-700/90"
               />
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              {isFetching && <div className="animate-spin h-4 w-4 border-b-2 border-gray-400 rounded-full" />}
+            </div>
             </div>
           </div>
 
@@ -145,7 +173,7 @@ const PageList = () => {
           {t('pagesFound')}: <span className="font-semibold">{pagination.total || 0}</span>
         </p>
         {filters.search && (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-300">
             {t('search')}: "{filters.search}"
           </p>
         )}
@@ -201,10 +229,10 @@ const PageList = () => {
       ) : (
         <div className="text-center py-16">
           <div className="text-gray-400 text-6xl mb-4">📚</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-gray-100">
             {t('noPages')}
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             {t('noPagesDesc')}
           </p>
         </div>

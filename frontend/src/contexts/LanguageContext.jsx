@@ -33,6 +33,8 @@ const translations = {
     previous: 'Назад',
     search: 'Поиск',
     gpw: 'Великая Отечественная Война',
+    userNotFound: 'Пользователь не найден',
+    wrongPassword: 'Неправильный пароль',
     
     // Pages
     pageTitle: '80 Страниц Победы',
@@ -40,6 +42,7 @@ const translations = {
     noPages: 'Страницы не найдены',
     noPagesDesc: 'Попробуйте изменить параметры поиска или фильтры',
     pageNotFound: 'Страница не найдена',
+    noPagesDescAdm: 'Страницы будут отображаться здесь после создания',
     backToList: 'Вернуться к списку',
     author: 'Автор',
     published: 'Опубликовано',
@@ -51,6 +54,8 @@ const translations = {
     writeComment: 'Напишите комментарий...',
     writeReply: 'Напишите ответ...',
     noComments: 'Пока нет комментариев. Будьте первым!',
+    noCommentsFnd: 'Комментарии не найдены',
+    noCommentsDescAdm: 'Комментарии будут отображаться здесь',
     pagesTitle: 'Исторические страницы',
     pagesDescription: 'Исследуйте 80 важных страниц истории победы. Каждая страница рассказывает уникальную историю о событиях, людях и местах, которые сформировали нашу страну.',
     pagesSearch: 'Поиск по названию или содержанию...',
@@ -113,6 +118,8 @@ const translations = {
     previous: 'Previous',
     search: 'Search',
     gpw: 'Great Patriotic War',
+    userNotFound: 'User not found',
+    wrongPassword: 'Wrong password',
     
     // Pages
     pageTitle: '80 Pages of Victory',
@@ -120,6 +127,7 @@ const translations = {
     noPages: 'No pages found',
     noPagesDesc: 'Try changing the search terms or filters',
     pageNotFound: 'Page not found',
+    noPagesDescAdm: 'There is you will see the pages',
     backToList: 'Back to list',
     author: 'Author',
     published: 'Published',
@@ -131,6 +139,8 @@ const translations = {
     writeComment: 'Write a comment...',
     writeReply: 'Write a reply...',
     noComments: 'No comments yet. Be the first!',
+    noCommentsFnd: 'No comments found',
+    noCommentsDescAdm: 'There is you will see the comments',
     pagesTitle: 'Historical Pages',
     pagesDescription: 'Explore 80 significant pages of victory history. Each page tells a unique story about events, people, and places that shaped our country.',
     pagesSearch: 'Search by title or content...',

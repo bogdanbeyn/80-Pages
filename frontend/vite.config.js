@@ -6,12 +6,13 @@ export default defineConfig(({ mode }) => {
 
   return {
     server: {
-      port: parseInt(env.PORT) || 5173,
+      port: parseInt(env.PORT) || 4173,
+      host: '0.0.0.0',
     },
     preview: {
       port: 4173,
       host: '0.0.0.0',
-      allowedHosts: ['frontend-production-39fb.up.railway.app'],
+      allowedHosts: ['frontend-production-39fb.up.railway.app', 'www.bogdanbeyn.online'],
   },
     plugins: [react()],
   };
