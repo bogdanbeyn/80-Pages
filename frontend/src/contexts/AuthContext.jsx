@@ -58,7 +58,7 @@ const authReducer = (state, action) => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const {t, language} = useLanguage();
+  const {t} = useLanguage();
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   // проверка токена

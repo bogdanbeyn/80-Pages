@@ -108,7 +108,7 @@ const categoryMap = {
         <div className="relative h-64 md:h-80 bg-gray-200">
           {page.imagePath ? (
             <img
-              src={`http://localhost:5000${page.imagePath}`}
+              src={`${page.imagePath}`}
               alt={page.title}
               className="w-full h-full object-cover"
               onError={(e) => {

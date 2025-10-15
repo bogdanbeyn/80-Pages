@@ -1,10 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { BookOpen, ArrowRight, Users, Calendar, MapPin, Star, Shield, Heart } from 'lucide-react';
+import { categoriesAPI } from '../services/api';
 
 const HomePage = () => {
   const { t, language } = useLanguage();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    categoriesAPI.getCategories().then((res) => {
+      setCategories(res.data);
+    });
+  }, []);
+
+  const icons = {
+    Город: '🏰',
+    Герой: '👑',
+    Событие: '⚔️',
+    Письмо: '📜',
+    Памятник: '🗿',
+    Артефакт: '💎',
+  };
+
+  const colors = {
+    Город: 'from-red-500 to-red-600',
+    Герой: 'from-orange-500 to-orange-600',
+    Событие: 'from-yellow-500 to-yellow-600',
+    Письмо: 'from-red-600 to-pink-600',
+    Памятник: 'from-orange-600 to-red-600',
+    Артефакт: 'from-yellow-600 to-orange-600',
+  };
 
   return (
     <div className="space-y-16">
@@ -27,7 +53,7 @@ const HomePage = () => {
           
           <h1 className="text-6xl md:text-7xl font-bold mb-8">
             <span className="bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent">
-              {t('pageTitle')}
+              {language === 'ru' ? "80 страниц истории Великой Победы" : "80 pages of the Great Victory history"}
             </span>
           </h1>
           
@@ -132,32 +158,32 @@ const HomePage = () => {
             }
           </p>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {[
-              { name: language === 'ru' ? 'Город' : 'City', icon: '🏰', count: 20, color: 'from-red-500 to-red-600' },
-              { name: language === 'ru' ? 'Герой' : 'Hero', icon: '👑', count: 20, color: 'from-orange-500 to-orange-600' },
-              { name: language === 'ru' ? 'Событие' : 'Event', icon: '⚔️', count: 20, color: 'from-yellow-500 to-yellow-600' },
-              { name: language === 'ru' ? 'Письмо' : 'Letter', icon: '📜', count: 10, color: 'from-red-600 to-pink-600' },
-              { name: language === 'ru' ? 'Памятник' : 'Monument', icon: '🗿', count: 5, color: 'from-orange-600 to-red-600' },
-              { name: language === 'ru' ? 'Артефакт' : 'Artifact', icon: '💎', count: 5, color: 'from-yellow-600 to-orange-600' },
-            ].map((category) => (
-              <Link
-                key={category.name}
-                to="/pages"
-                className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 text-center"
-              >
-                <div className={`w-16 h-16 bg-gradient-to-br ${category.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                  <span className="text-2xl">{category.icon}</span>
-                </div>
-                <h3 className="font-bold text-gray-900 dark:text-white mb-2 text-lg">
-                  {category.name}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {category.count} {language === 'ru' ? 'страниц' : 'pages'}
-                </p>
-              </Link>
-            ))}
-          </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+      {categories.map((category) => {
+        const name = language === 'ru' ? category.name : category.name_en;
+        const icon = icons[category.name] || '📁';
+        const color = colors[category.name] || 'from-gray-500 to-gray-600';
+        const count = category._count?.pages || 0;
+
+        return (
+          <Link
+            key={category.id}
+            to={`/pages?categoryId=${category.id}`}
+            className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 text-center"
+          >
+            <div className={`w-16 h-16 bg-gradient-to-br ${color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+              <span className="text-2xl">{icon}</span>
+            </div>
+            <h3 className="font-bold text-gray-900 dark:text-white mb-2 text-lg">
+              {name}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {count} {language === 'ru' ? 'страниц' : 'pages'}
+            </p>
+          </Link>
+        );
+      })}
+    </div>
         </div>
       </section>
 

@@ -37,8 +37,8 @@ const translations = {
     wrongPassword: 'Неправильный пароль',
     
     // Pages
-    pageTitle: '80 Страниц Победы',
-    pageSubtitle: 'Изучайте историю Великой Отечественной Войны',
+    pageTitle: '80 страниц истории Победы',
+    pageSubtitle: 'Изучайте историю Великой Победы',
     noPages: 'Страницы не найдены',
     noPagesDesc: 'Попробуйте изменить параметры поиска или фильтры',
     pageNotFound: 'Страница не найдена',
@@ -122,8 +122,8 @@ const translations = {
     wrongPassword: 'Wrong password',
     
     // Pages
-    pageTitle: '80 Pages of Victory',
-    pageSubtitle: 'Learn the history of the Great Patriotic War',
+    pageTitle: '80 pages of Victory history',
+    pageSubtitle: 'Learn the history of the Great Victory',
     noPages: 'No pages found',
     noPagesDesc: 'Try changing the search terms or filters',
     pageNotFound: 'Page not found',

@@ -52,7 +52,7 @@ const PageCard = ({ page }) => {
         <div className="relative h-48 bg-gray-200 overflow-hidden">
           {page.imagePath ? (
             <img
-              src={`http://localhost:5000${page.imagePath}`}
+              src={`${page.imagePath}`}
               alt={page.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               onError={(e) => {

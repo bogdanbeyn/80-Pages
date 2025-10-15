@@ -4,6 +4,7 @@ import { Search, Filter, Calendar, User, MessageCircle } from 'lucide-react';
 import { pagesAPI, categoriesAPI } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import PageCard from '../components/PageCard';
+import { useLocation } from 'react-router-dom';
 
 const PageList = () => {
   const { t } = useLanguage();
@@ -11,9 +12,12 @@ const PageList = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialCategoryId = queryParams.get('categoryId') || '';
   const [filters, setFilters] = useState({
     search: '',
-    categoryId: '',
+    categoryId: initialCategoryId,
     page: 1,
   });
   const [pagination, setPagination] = useState({});
@@ -21,6 +25,8 @@ const PageList = () => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [isFetching, setIsFetching] = useState(false);
   const isFirstRun = useRef(true);
+  
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -199,7 +205,7 @@ if (loading && pages.length === 0) {
                 {t('back')}
               </button>
               
-              {Array.from({ length: Math.min(5, pagination.pages) }, (_, i) => {
+              {Array.from({ length: Math.min(7, pagination.pages) }, (_, i) => {
                 const pageNum = i + 1;
                 return (
                   <button

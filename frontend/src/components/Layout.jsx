@@ -51,9 +51,7 @@ const Layout = ({ children }) => {
                 <span className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                   {t('pageTitle')}
                 </span>
-                <p className="text-xs text-gray-600 dark:text-gray-400 -mt-1">
-                  {t('pageSubtitle')}
-                </p>
+
               </div>
             </Link>
 
@@ -203,12 +201,14 @@ const Layout = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="h-8 w-8 bg-gradient-to-br from-red-600 to-orange-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">80</span>
+              <div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                  {t('pageTitle')}
+                </span>
+                <p className="text-xs text-gray-600 dark:text-gray-400 -mt-1">
+                  {t('pageSubtitle')}
+                </p>
               </div>
-              <span className="text-lg font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                {t('pageTitle')}
-              </span>
             </div>
             <p className="text-gray-600 dark:text-gray-400 mb-2">
               &copy; 2025 <a href='https://github.com/bogdanbeyn' className='text-red-600 dark:text-red-400 hover:underline'>Bogdan Beyn</a>

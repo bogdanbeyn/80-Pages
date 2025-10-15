@@ -163,7 +163,7 @@ const AdminPanel = () => {
                           {page.imagePath ? (
                             <img
                               className="h-10 w-10 rounded-lg object-cover"
-                              src={`http://localhost:5000${page.imagePath}`}
+                              src={`${page.imagePath}`}
                               alt={page.title}
                             />
                           ) : (
