@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://frontend-production-39fb.up.railway.app', 'www.bogdanbeyn.online'] 
+    ? ['https://frontend-production-39fb.up.railway.app', 'https://www.bogdanbeyn.online'] 
     : ['http://localhost:4173', 'http://localhost:5000'],
   credentials: true,
 }));
