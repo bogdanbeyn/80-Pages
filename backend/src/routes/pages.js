@@ -13,6 +13,7 @@ const pageValidation = [
   body('imagePath').trim().notEmpty().withMessage('Image path is required')
 ];
 
+
 // все страницы с пагин
 router.get('/', async (req, res) => {
   try {
@@ -35,7 +36,7 @@ router.get('/', async (req, res) => {
       ];
     }
 
-    const [pages, total] = await Promise.all([
+    const [pagesRaw, total] = await Promise.all([
       prisma.page.findMany({
         where,
         include: {
@@ -54,6 +55,19 @@ router.get('/', async (req, res) => {
       prisma.page.count({ where })
     ]);
 
+    const pages = await Promise.all(
+      pagesRaw.map(async (page) => {
+        const viewsCount = await prisma.pageView.count({
+          where: { pageId: page.id }
+        });
+
+        return {
+          ...page,
+          views: viewsCount
+        };
+      })
+    );
+
     res.json({
       pages,
       pagination: {
@@ -68,6 +82,7 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 router.get('/by-comments', async (req, res) => {
   try {
@@ -95,7 +110,6 @@ router.get('/by-comments', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const pageId = parseInt(req.params.id);
-    
     if (isNaN(pageId)) {
       return res.status(400).json({ message: 'Invalid page ID' });
     }
@@ -104,39 +118,68 @@ router.get('/:id', async (req, res) => {
       where: { id: pageId },
       include: {
         category: true,
-        createdBy: {
-          select: { id: true, name: true }
-        },
+        createdBy: { select: { id: true, name: true } },
         comments: {
-          where: { parentId: null }, // только родительские комментарии
+          where: { parentId: null },
           include: {
-            user: {
-              select: { id: true, name: true }
-            },
+            user: { select: { id: true, name: true } },
             replies: {
-              include: {
-                user: {
-                  select: { id: true, name: true }
-                }
-              },
+              include: { user: { select: { id: true, name: true } } },
               orderBy: { createdAt: 'asc' }
             }
           },
-          orderBy: { createdAt: 'desc' }
-        }
-      }
+          orderBy: { createdAt: 'desc' }}}
     });
 
     if (!page) {
       return res.status(404).json({ message: 'Page not found' });
     }
 
-    res.json(page);
+    const viewerIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+    const recentView = await prisma.pageView.findFirst({
+      where: {
+        pageId,
+        viewerIp: String(viewerIp),
+        viewedAt: {
+          gte: new Date(Date.now() - 3 * 60 * 1000) // 3 минуты назад
+        }
+      }
+    });
+
+    if (!recentView) {
+      await prisma.pageView.create({
+        data: {
+          pageId,
+          viewerIp: String(viewerIp)
+        }
+      });
+    }
+
+    const viewsCount = await prisma.pageView.count({
+      where: { pageId }
+    });
+
+res.json({
+  id: page.id,
+  title: page.title,
+  content: page.content,
+  imagePath: page.imagePath,
+  categoryId: page.categoryId,
+  createdById: page.createdById,
+  createdAt: page.createdAt,
+  category: page.category,
+  createdBy: page.createdBy,
+  comments: page.comments,
+  views: viewsCount
+});
+
   } catch (error) {
     console.error('Get page error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
 
@@ -278,5 +321,6 @@ router.delete('/:id', authMiddleware, adminOnly, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 module.exports = router;

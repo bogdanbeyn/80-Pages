@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { pagesAPI, commentsAPI, usersAPI } from '../services/api';
+import { pagesAPI, commentsAPI, usersAPI, uploadAPI } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import ModalConfirm from '../components/Modal/ModalConfirm';
+import ModalForm from '../components/Modal/ModalForm';
 import { Edit, Trash2, Eye, MessageCircle, Calendar, User, Trash, DeleteIcon, PowerIcon, CheckIcon, XIcon, SquarePenIcon } from 'lucide-react';
 
 const AdminPanel = () => {
@@ -18,8 +19,8 @@ const AdminPanel = () => {
   message: '',
   onConfirm: () => {}
 });
-  const [commentToDelete, setCommentToDelete] = useState(null);
-
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [pageToEdit, setPageToEdit] = useState(null);
 
 
   useEffect(() => {
@@ -124,6 +125,50 @@ const openConfirmModal = ({ title, message, onConfirm }) => {
   setModalOpen(true);
 };
 
+const openEditModal = (page) => {
+  setPageToEdit({
+    ...page,
+    category: page.category.name || '',
+    content: page.content || '',
+    imagePath: page.imagePath || ''
+  });
+  setEditModalOpen(true);
+};
+
+const handleUpdatePage = async (formData) => {
+  try {
+    let imagePath = formData.imagePath;
+
+    if (formData.imageFile) {
+      const uploadRes = await uploadAPI.uploadImage(formData.imageFile instanceof FormData
+        ? formData.imageFile
+        : (() => {
+            const fd = new FormData();
+            fd.append('image', formData.imageFile);
+            return fd;
+          })()
+      );
+      imagePath = uploadRes.data.imagePath;
+    }
+
+    const payload = {
+      title: formData.title,
+      content: formData.content,
+      categoryId: parseInt(formData.categoryId),
+      imagePath
+    };
+
+    await pagesAPI.updatePage(pageToEdit.id, payload);
+    setPages(prev => prev.map(p => (p.id === pageToEdit.id ? { ...p, ...payload } : p)));
+    setEditModalOpen(false);
+  } catch (err) {
+    setError('Ошибка при обновлении страницы');
+  }
+};
+
+
+
+
 
   const headersPages = language === 'ru'
   ? ['Название', 'Автор', 'Категория', 'Дата', 'Комментарии', 'Действия']
@@ -157,6 +202,16 @@ const openConfirmModal = ({ title, message, onConfirm }) => {
         confirmText={t('delete')}
         cancelText={t('cancel')}
       />
+      <ModalForm
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        onSubmit={handleUpdatePage}
+        initialData={pageToEdit}
+        title={t('editPageTitle')}
+        confirmText={t('save')}
+        cancelText={t('cancel')}
+      />
+
       {/* head */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -232,7 +287,7 @@ const openConfirmModal = ({ title, message, onConfirm }) => {
                           {page.imagePath ? (
                             <img
                               className="h-10 w-10 rounded-lg object-cover"
-                              src={`${page.imagePath}`}
+                              src={`http://localhost:5000${page.imagePath}`}
                               alt={page.title}
                             />
                           ) : (
@@ -272,12 +327,12 @@ const openConfirmModal = ({ title, message, onConfirm }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
-                        <a
-                          href={`/pages/${page.id}`}
-                          className="text-primary-600 hover:text-primary-900"
+                        <button
+                          onClick={() => openEditModal(page)}
+                          className="text-red-600 hover:text-red-900"
                         >
                           <SquarePenIcon className="h-4 w-4" />
-                        </a>
+                        </button>
                         <button
                           onClick={() => openConfirmModal({
                           title: t('confirmPageDelete'),

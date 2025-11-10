@@ -42,6 +42,12 @@ const translations = {
     gpw: 'Великая Отечественная Война',
     userNotFound: 'Пользователь не найден',
     wrongPassword: 'Неправильный пароль',
+    title: 'Название',
+    category: 'Категория',
+    image: 'Изображение',
+    file: 'Файл',
+    content: 'Контент',
+    contentTip: 'Введите текст страницы',
     
     // Pages
     pageTitle: '80 страниц истории Победы',
@@ -106,7 +112,8 @@ const translations = {
     // Admin
     panel: 'Панель',
     managePagesAndComments: 'Управление страницами и комментариями',
-    manageComments: 'Управление комментариями'
+    manageComments: 'Управление комментариями',
+    editPageTitle: 'Редактирование страницы'
   },
   en: {
     // Navigation
@@ -139,7 +146,13 @@ const translations = {
     gpw: 'Great Patriotic War',
     userNotFound: 'User not found',
     wrongPassword: 'Wrong password',
-    
+    title: 'Title',
+    category: 'Category',
+    image: 'Image',
+    file: 'File',
+    content: 'Content',
+    contentTip: 'Enter the text of page',
+
     // Pages
     pageTitle: '80 pages of Victory history',
     pageSubtitle: 'Learn the history of the Great Victory',
@@ -203,7 +216,8 @@ const translations = {
     // Admin
     panel: 'Panel',
     managePagesAndComments: 'Manage pages and comments',
-    manageComments: 'Manage comments'
+    manageComments: 'Manage comments',
+    editPageTitle: 'Page editing'
   }
 };
 

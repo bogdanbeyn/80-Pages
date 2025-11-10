@@ -33,6 +33,7 @@ model Page {
   createdBy   User     @relation(fields: [createdById], references: [id])
   comments    Comment[]
   createdAt   DateTime @default(now())
+  views       PageView[]
 }
 
 model Category {
@@ -40,6 +41,7 @@ model Category {
   name   String  @unique
   pages  Page[]
 }
+
 
 model Comment {
   id        Int      @id @default(autoincrement())
@@ -53,6 +55,16 @@ model Comment {
   replies   Comment[] @relation("CommentReplies")
   createdAt DateTime @default(now())
 }
+
+model PageView {
+  id        Int      @id @default(autoincrement())
+  pageId    Int
+  page      Page     @relation(fields: [pageId], references: [id])
+  viewedAt  DateTime @default(now())
+  viewerIp  String?  
+}
+
+
 
 enum Role {
   USER
