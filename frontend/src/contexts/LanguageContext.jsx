@@ -16,9 +16,16 @@ const translations = {
     home: 'Главная',
     pages: 'Страницы',
     admin: 'Админ',
+    moder: 'Модератор',
     login: 'Войти',
     register: 'Регистрация',
     logout: 'Выйти',
+    confirmPageDelete: 'Вы уверены, что хотите удалить эту страницу?',
+    confirmCommentDelete: 'Вы уверены, что хотите удалить этот комментарий?',
+    confirmUserDelete: 'Вы уверены, что хотите удалить этого пользователя?',
+    confirmUserDisabling: 'Вы уверены, что хотите отключить этого пользователя?',
+    deleteWarning: 'После нажатия на "Удалить", вы не сможете восстановить элемент!',
+    disableWarning: 'Пользователь не сможет войти в систему и оставлять комментарии',
     
     // Common
     loading: 'Загрузка...',
@@ -59,9 +66,13 @@ const translations = {
     pagesTitle: 'Исторические страницы',
     pagesDescription: 'Исследуйте 80 важных страниц истории победы. Каждая страница рассказывает уникальную историю о событиях, людях и местах, которые сформировали нашу страну.',
     pagesSearch: 'Поиск по названию или содержанию...',
+    commentsSearch: 'Поиск по автору или содержанию...',
     pagesFilterByCategory: 'Все категории',
+    commentsFilterByPage: 'Все страницы',
     pagesFound: 'Найдено страниц',
     readMore: 'Читать далее',
+    users: 'Пользователи',
+    accountDisabled: 'Ваш аккаунт отключен. Если вы считаете, что произошла ошибка, обратитесь в поддержку.',
 
     // Categories
     city: 'Город',
@@ -94,16 +105,24 @@ const translations = {
     
     // Admin
     panel: 'Панель',
-    managePagesAndComments: 'Управление страницами и комментариями'
+    managePagesAndComments: 'Управление страницами и комментариями',
+    manageComments: 'Управление комментариями'
   },
   en: {
     // Navigation
     home: 'Home',
     pages: 'Pages',
     admin: 'Admin',
+    moder: 'Moderator',
     login: 'Login',
     register: 'Register',
     logout: 'Logout',
+    confirmPageDelete: 'Do you really want to delete this page?',
+    confirmCommentDelete: 'Do you really want to delete this comment?',
+    confirmUserDelete: 'Do you really want to delete this user?',
+    confirmUserDisabling: 'Do you really want to disable this user?',
+    deleteWarning: 'You woudn\'t restore it after the deleting.',
+    disableWarning: 'The user cannot log in and leave comments',
     
     // Common
     loading: 'Loading...',
@@ -144,9 +163,13 @@ const translations = {
     pagesTitle: 'Historical Pages',
     pagesDescription: 'Explore 80 significant pages of victory history. Each page tells a unique story about events, people, and places that shaped our country.',
     pagesSearch: 'Search by title or content...',
+    commentsSearch: 'Search by author or content...',
     pagesFilterByCategory: 'All categories',
+    commentsFilterByPage: 'All pages',
     pagesFound: 'Pages found',
     readMore: 'Read more',
+    users: 'Users',
+    accountDisabled: 'Your account is disabled. If you believe an error has occurred, please contact support.',
     
     // Categories
     city: 'City',
@@ -179,7 +202,8 @@ const translations = {
     
     // Admin
     panel: 'Panel',
-    managePagesAndComments: 'Manage pages and comments'
+    managePagesAndComments: 'Manage pages and comments',
+    manageComments: 'Manage comments'
   }
 };
 

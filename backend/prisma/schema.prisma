@@ -19,6 +19,7 @@ model User {
   comments    Comment[]
   pages       Page[]
   createdAt   DateTime @default(now())
+  isDeleted   Boolean  @default(false)
 }
 
 model Page {
@@ -55,5 +56,6 @@ model Comment {
 
 enum Role {
   USER
+  MODER
   ADMIN
 }

@@ -69,6 +69,28 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/by-comments', async (req, res) => {
+  try {
+    const pages = await prisma.page.findMany({
+      include: {
+        _count: {
+          select: { comments: true }
+        }
+      },
+      orderBy: {
+        comments: {
+          _count: 'desc'
+        }
+      },
+      take: 100
+    });
+
+    res.json({ pages });
+  } catch (error) {
+    console.error('Get pages by comments error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 // страница по id
 router.get('/:id', async (req, res) => {
   try {
@@ -115,6 +137,8 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
 
 // создание (только admin)
 router.post('/', authMiddleware, adminOnly, pageValidation, async (req, res) => {

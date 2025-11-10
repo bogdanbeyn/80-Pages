@@ -49,6 +49,7 @@ export const authAPI = {
 export const pagesAPI = {
   getPages: (params = {}) => api.get('/pages', { params }),
   getPage: (id) => api.get(`/pages/${id}`),
+  getPagesByComments: () => api.get('/pages/by-comments'),
   createPage: (pageData) => api.post('/pages', pageData),
   updatePage: (id, pageData) => api.put(`/pages/${id}`, pageData),
   deletePage: (id) => api.delete(`/pages/${id}`),
@@ -63,9 +64,16 @@ export const categoriesAPI = {
 // api methods for comments
 export const commentsAPI = {
   getComments: (pageId) => api.get(`/comments/page/${pageId}`),
-  getAllComments: () => api.get('/comments/all'),
+  getAllComments: (params = {}) => api.get('/comments/all', { params }),
   createComment: (commentData) => api.post('/comments', commentData),
   deleteComment: (id) => api.delete(`/comments/${id}`),
+};
+
+// api methods for usres
+export const usersAPI = {
+  getAllUsers: () => api.get('/users/all'),
+  deleteUser: (userId) => api.post(`/users/${userId}`),
+  deleteUserPerm: (userId) => api.delete(`/users/${userId}`),
 };
 
 // api methods for file uploading

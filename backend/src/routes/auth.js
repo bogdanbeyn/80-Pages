@@ -51,13 +51,15 @@ router.post('/register', registerValidation, async (req, res) => {
         name,
         email,
         password: hashedPassword,
-        role: 'USER'
+        role: 'USER',
+        isDeleted: false,
       },
       select: {
         id: true,
         name: true,
         email: true,
-        role: true
+        role: true,
+        isDeleted: true
       }
     });
 
@@ -104,6 +106,10 @@ router.post('/login', loginValidation, async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Wrong password' });
+    }
+
+    if(user.isDeleted){
+      return res.status(400).json({ message: 'Account is disabled'});
     }
 
     // генерация jwt

@@ -27,6 +27,13 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
+const moderOnly = (req, res, next) => {
+  if (req.user.role !== 'MODER') {
+    return res.status(403).json({ message: 'Access denied. Moderator role required.' });
+  }
+  next();
+};
+
 const adminOnly = (req, res, next) => {
   if (req.user.role !== 'ADMIN') {
     return res.status(403).json({ message: 'Access denied. Admin role required.' });
@@ -34,4 +41,15 @@ const adminOnly = (req, res, next) => {
   next();
 };
 
-module.exports = { authMiddleware, adminOnly };
+const moderOrAdmin = (req, res, next) => {
+  const role = req.user.role;
+
+  if(role === 'ADMIN' || role === 'MODER'){
+            next();
+            return;
+        }
+ 
+        res.status(403).json({ message: "Require Moderator or Admin Role!" });
+}
+
+module.exports = { authMiddleware, moderOnly, adminOnly, moderOrAdmin };

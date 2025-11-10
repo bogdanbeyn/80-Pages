@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const prisma = require('../db');
-const { authMiddleware, adminOnly } = require('../middleware/auth');
+const { authMiddleware, adminOnly, moderOnly, moderOrAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -12,27 +12,34 @@ const commentValidation = [
   body('parentId').optional().isInt({ min: 1 }).withMessage('Valid parent comment ID is required')
 ];
 
-// все комментарии (для админки)
-router.get('/all', authMiddleware, adminOnly, async (req, res) => {
+// все комментарии
+router.get('/all', authMiddleware, moderOrAdmin, async (req, res) => {
   try {
+    const { pageId } = req.query;
+
+    const where = {};
+
+    if (!isNaN(parseInt(pageId))) {
+      where.pageId = parseInt(pageId);
+    }
+
     const comments = await prisma.comment.findMany({
+      where,
       include: {
-        user: {
-          select: { id: true, name: true }
-        },
-        page: {
-          select: { id: true, title: true }
-        }
+        _count: { select: { replies: true } },
+        user: { select: { id: true, name: true } },
+        page: { select: { id: true, title: true } }
       },
       orderBy: { createdAt: 'desc' }
     });
 
-    res.json(comments);
+    res.json({ comments });
   } catch (error) {
     console.error('Get all comments error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // комментарии для страницы
 router.get('/page/:pageId', async (req, res) => {
@@ -54,6 +61,7 @@ router.get('/page/:pageId', async (req, res) => {
         },
         replies: {
           include: {
+            _count: { select: {replies: true}},
             user: {
               select: { id: true, name: true }
             }
@@ -64,7 +72,7 @@ router.get('/page/:pageId', async (req, res) => {
       orderBy: { createdAt: 'desc' }
     });
 
-    res.json(comments);
+    res.json({comments});
   } catch (error) {
     console.error('Get comments error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -128,8 +136,8 @@ router.post('/', authMiddleware, commentValidation, async (req, res) => {
   }
 });
 
-// удаление (только admin)
-router.delete('/:id', authMiddleware, adminOnly, async (req, res) => {
+// удаление
+router.delete('/:id', authMiddleware, moderOrAdmin, async (req, res) => {
   try {
     const commentId = parseInt(req.params.id);
 

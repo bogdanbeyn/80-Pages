@@ -9,6 +9,7 @@ const pageRoutes = require('./routes/pages');
 const categoryRoutes = require('./routes/categories');
 const commentRoutes = require('./routes/comments');
 const uploadRoutes = require('./routes/upload');
+const userRoutes = require('./routes/users');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -33,6 +34,7 @@ app.use('/api/pages', pageRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/users', userRoutes);
 
 // health check
 app.get('/api/health', (req, res) => {

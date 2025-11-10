@@ -12,6 +12,7 @@ import RegisterPage from './pages/RegisterPage';
 import AddPage from './pages/AddPage';
 import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
+import ModerPanel from './pages/ModerPanel';
 
 function App() {
   return (
@@ -42,6 +43,14 @@ function App() {
                         <AdminPanel />
                       </ProtectedRoute>
                     } 
+                  />
+                  <Route 
+                    path="/moder"
+                    element={
+                      <ProtectedRoute moderOnly>
+                        <ModerPanel />
+                      </ProtectedRoute>
+                    }
                   />
                 </Routes>
               </Layout>

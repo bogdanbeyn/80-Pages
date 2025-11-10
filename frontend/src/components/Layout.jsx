@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { BookOpen, Home, User, LogOut, Settings, Sun, Moon, Globe } from 'lucide-react';
 
 const Layout = ({ children }) => {
-  const { user, isAuthenticated, logout, isAdmin } = useAuth();
+  const { user, isAuthenticated, logout, isAdmin, isModer } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { language, changeLanguage, t } = useLanguage();
   const location = useLocation();
@@ -80,6 +80,20 @@ const Layout = ({ children }) => {
                 <BookOpen className="h-4 w-4" />
                 <span>{t('pages')}</span>
               </Link>
+
+              {isModer() && (
+                <Link
+                  to="/moder"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    isActive('/moder') 
+                      ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 shadow-md' 
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-800/50 hover:text-red-600 dark:hover:text-red-400'
+                  }`}
+                >
+                  <Settings className="h-4 w-4" />
+                  <span>{t('moder')}</span>
+                </Link>
+              )}
 
               {isAdmin() && (
                 <Link
