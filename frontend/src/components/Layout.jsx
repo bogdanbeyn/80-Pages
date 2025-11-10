@@ -55,46 +55,6 @@ const Layout = ({ children }) => {
               </div>
             </Link>
 
-            {/* navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link
-                to="/"
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive('/') 
-                    ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 shadow-md' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-800/50 hover:text-red-600 dark:hover:text-red-400'
-                }`}
-              >
-                <Home className="h-4 w-4" />
-                <span>{t('home')}</span>
-              </Link>
-              
-              <Link
-                to="/pages"
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive('/pages') 
-                    ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 shadow-md' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-800/50 hover:text-red-600 dark:hover:text-red-400'
-                }`}
-              >
-                <BookOpen className="h-4 w-4" />
-                <span>{t('pages')}</span>
-              </Link>
-
-              {isAdmin() && (
-                <Link
-                  to="/admin"
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive('/admin') 
-                      ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 shadow-md' 
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-800/50 hover:text-red-600 dark:hover:text-red-400'
-                  }`}
-                >
-                  <Settings className="h-4 w-4" />
-                  <span>{t('admin')}</span>
-                </Link>
-              )}
-            </nav>
 
             {/* controls */}
             <div className="flex items-center space-x-3">
@@ -150,50 +110,23 @@ const Layout = ({ children }) => {
                   </div>
                 )}
               </div>
-
-              {/* user menu */}
-              {isAuthenticated ? (
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="h-10 w-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-md">
-                      <User className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {user?.name}
-                    </span>
-                  </div>
-                  <button
-                    onClick={logout}
-                    className="flex items-center space-x-1 px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-all duration-200"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span className="text-sm">{t('logout')}</span>
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-3">
-                  <Link
-                    to="/login"
-                    className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors font-medium"
-                  >
-                    {t('login')}
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-red-700 hover:to-orange-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium "
-                  >
-                    {t('register')}
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+</div></div></div>
       </header>
-
       {/* main */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
+        <div className="flex items-center justify-center min-h-screen">
+      <div className="bg-white/90 dark:bg-gray-800/90 shadow-lg rounded-lg p-6 max-w-md text-center border border-gray-600/70">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4 dark:text-gray-300">🚧 Сайт в разработке</h2>
+        <p className="text-gray-600 mb-6">
+          Разработчик усердно работает над улучшением платформы. Пожалуйста, зайдите позже!
+        </p>
+        <div className="animate-pulse flex justify-center">
+          <div className="h-3 w-3 bg-gradient-to-br from-red-600 to-orange-600 rounded-full mr-3 mb-1"></div>
+          <div className="h-3 w-3 bg-gradient-to-br from-red-600 to-orange-600 rounded-full mr-3 mb-1"></div>
+          <div className="h-3 w-3 bg-gradient-to-br from-red-600 to-orange-600 rounded-full "></div>
+        </div>
+      </div>
+    </div>
       </main>
 
       {/* footer */}

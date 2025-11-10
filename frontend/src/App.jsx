@@ -23,26 +23,6 @@ function App() {
               <Layout>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
-                  <Route path="/pages" element={<PageList />} />
-                  <Route path="/pages/:id" element={<PageDetail />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route 
-                    path="/add" 
-                    element={
-                      <ProtectedRoute adminOnly>
-                        <AddPage />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin" 
-                    element={
-                      <ProtectedRoute adminOnly>
-                        <AdminPanel />
-                      </ProtectedRoute>
-                    } 
-                  />
                 </Routes>
               </Layout>
             </div>
