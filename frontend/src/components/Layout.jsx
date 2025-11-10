@@ -116,9 +116,9 @@ const Layout = ({ children }) => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-center min-h-screen">
       <div className="bg-white/90 dark:bg-gray-800/90 shadow-lg rounded-lg p-6 max-w-md text-center border border-gray-600/70">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4 dark:text-gray-300">🚧 Сайт в разработке</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4 dark:text-gray-300">🚧 {language === 'ru' ? 'Сайт в разработке' : 'The website in progress'}</h2>
         <p className="text-gray-600 mb-6">
-          Разработчик усердно работает над улучшением платформы. Пожалуйста, зайдите позже!
+          {language==='ru' ? 'Разработчик усердно работает над улучшением платформы. Пожалуйста, зайдите позже!' : 'Developper is working a lot to make the platform better!'}
         </p>
         <div className="animate-pulse flex justify-center">
           <div className="h-3 w-3 bg-gradient-to-br from-red-600 to-orange-600 rounded-full mr-3 mb-1"></div>
