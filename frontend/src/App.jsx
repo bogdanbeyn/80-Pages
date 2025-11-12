@@ -13,6 +13,8 @@ import AddPage from './pages/AddPage';
 import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
 import ModerPanel from './pages/ModerPanel';
+import TestList from './pages/TestList';
+import TestRunner from './components/TestRunner';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
                   <Route path="/pages/:id" element={<PageDetail />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/tests" element={<TestList />} />
+                  <Route path="/tests/:id" element={<TestRunner />} />
                   <Route 
                     path="/add" 
                     element={

@@ -76,7 +76,7 @@ useEffect(() => {
     setComments(prev => prev.filter(c => c.id !== commentId));
     fetchPages();
   } catch (err) {
-    console.error('Ошибка удаления комментария:', err);
+    console.error('Comment deleting error:', err);
     setError(t('deleteError'));
   }
 };
@@ -91,6 +91,19 @@ const confirmDelete = async () => {
   await handleDeleteComment(commentToDelete.id);
   setModalOpen(false);
 };
+
+const handleApproveComment = async (commentId) => {
+  try {
+    await commentsAPI.approveComment(commentId);
+    setComments(prev =>
+      prev.map(c => c.id === commentId ? { ...c, isFlagged: false } : c)
+    );
+  } catch (err) {
+    console.error('Comment approving error:', err);
+    setError(t('approveError'));
+  }
+};
+
 
 
 
@@ -166,7 +179,7 @@ if (loading) {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {comments.map((comment) => (
-              <CommentCard comment={comment} onDelete={() => openConfirmModal(comment)} />
+              <CommentCard key={comment.id} comment={comment} onDelete={() => openConfirmModal(comment) } onApprove={() => handleApproveComment(comment.id)}/>
               
             ))}
             

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Calendar, User, MessageCircle, ArrowLeft, Heart } from 'lucide-react';
+import { Calendar, User, MessageCircle, ArrowLeft, Heart, EyeIcon } from 'lucide-react';
 import { pagesAPI } from '../services/api';
 import CommentList from '../components/CommentList';
 import CommentForm from '../components/CommentForm';
@@ -108,7 +108,7 @@ const categoryMap = {
         <div className="relative h-64 md:h-80 bg-gray-200">
           {page.imagePath ? (
             <img
-              src={`${page.imagePath}`}
+              src={`http://localhost:5000${page.imagePath}`}
               alt={page.title}
               className="w-full h-full object-cover"
               onError={(e) => {
@@ -158,6 +158,10 @@ const categoryMap = {
                 <span>{t('comments')}: {page.comments.length}</span>
               </div>
             )}
+            <div className="flex items-center space-x-2">
+              <EyeIcon className="h-4 w-4" />
+              <span>{t('views')}: {page.views}</span>
+            </div>
           </div>
 
           {/* art content */}

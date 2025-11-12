@@ -120,16 +120,19 @@ router.get('/:id', async (req, res) => {
         category: true,
         createdBy: { select: { id: true, name: true } },
         comments: {
-          where: { parentId: null },
+          where: { isFlagged: false },
           include: {
             user: { select: { id: true, name: true } },
             replies: {
-              include: { user: { select: { id: true, name: true } } },
+              where: { isFlagged: false },
+              include: {
+                user: { select: { id: true, name: true } }
+              },
               orderBy: { createdAt: 'asc' }
             }
           },
-          orderBy: { createdAt: 'desc' }}}
-    });
+          orderBy: { createdAt: 'desc' }
+        }}});
 
     if (!page) {
       return res.status(404).json({ message: 'Page not found' });

@@ -43,6 +43,8 @@ export const authAPI = {
   register: (userData) => api.post('/auth/register', userData),
   login: (credentials) => api.post('/auth/login', credentials),
   getMe: () => api.get('/auth/me'),
+  requestCode: (email) => api.post('/auth/request-code', { email }),
+  verifyCode: (email, code) => api.post('/auth/verify-code', { email, code }),
 };
 
 // api methods for pages
@@ -67,7 +69,8 @@ export const commentsAPI = {
   getAllComments: (params = {}) => api.get('/comments/all', { params }),
   createComment: (commentData) => api.post('/comments', commentData),
   deleteComment: (id) => api.delete(`/comments/${id}`),
-};
+  approveComment: (id) => api.patch(`/comments/${id}/approve`),
+};  
 
 // api methods for usres
 export const usersAPI = {
@@ -85,5 +88,13 @@ export const uploadAPI = {
   }),
   deleteImage: (filename) => api.delete(`/upload/${filename}`),
 };
+
+export const testsAPI = {
+  createTest: (testData) => api.post('/tests', testData),
+  getAllTests: () => api.get('/tests'),
+  getTest: (testId) => api.get(`/tests/${testId}`),
+  submitTest: (testId, data) => api.post(`/tests/${testId}/submit`, data),
+  getUserTestsResults: (userId) => api.get(`/tests/${userId}/results`)
+}
 
 export default api;

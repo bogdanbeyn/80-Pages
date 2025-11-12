@@ -77,8 +77,14 @@ const translations = {
     commentsFilterByPage: 'Все страницы',
     pagesFound: 'Найдено страниц',
     readMore: 'Читать далее',
+    views: 'Просмотры',
     users: 'Пользователи',
     accountDisabled: 'Ваш аккаунт отключен. Если вы считаете, что произошла ошибка, обратитесь в поддержку.',
+
+    // Tests
+    tests: 'Тесты',
+    testsTitle: 'Проверь себя',
+    testsDescription: 'Здесь собраны все тесты посвященные истории Великой Победы',
 
     // Categories
     city: 'Город',
@@ -181,8 +187,14 @@ const translations = {
     commentsFilterByPage: 'All pages',
     pagesFound: 'Pages found',
     readMore: 'Read more',
+    views: 'Views',
     users: 'Users',
     accountDisabled: 'Your account is disabled. If you believe an error has occurred, please contact support.',
+
+    // Tests
+    tests: 'Tests',
+    testsTitle: 'Test yourself',
+    testsDescription: 'Here are collected all the tests dedicated to the history of the Great Victory',
     
     // Categories
     city: 'City',

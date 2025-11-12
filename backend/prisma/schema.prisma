@@ -20,6 +20,7 @@ model User {
   pages       Page[]
   createdAt   DateTime @default(now())
   isDeleted   Boolean  @default(false)
+  testResults TestResult[]
 }
 
 model Page {
@@ -49,6 +50,7 @@ model Comment {
   pageId    Int
   userId    Int
   parentId  Int?
+  isFlagged Boolean  @default(false)
   page      Page     @relation(fields: [pageId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
   parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id])
@@ -63,6 +65,56 @@ model PageView {
   viewedAt  DateTime @default(now())
   viewerIp  String?  
 }
+
+model Test {
+  id        Int       @id @default(autoincrement())
+  title     String
+  questions Question[]
+  createdAt DateTime  @default(now())
+  results   TestResult[]
+}
+
+model Question {
+  id        Int       @id @default(autoincrement())
+  text      String
+  answers   Answer[]
+  testId    Int
+  test      Test      @relation(fields: [testId], references: [id])
+  userAnswers UserAnswer[]
+}
+
+model Answer {
+  id         Int       @id @default(autoincrement())
+  text       String
+  isCorrect  Boolean   @default(false)
+  questionId Int
+  question   Question  @relation(fields: [questionId], references: [id])
+  userAnswers UserAnswer[]
+}
+
+model TestResult {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  testId    Int
+  test      Test      @relation(fields: [testId], references: [id])
+  score     Int       
+  total     Int       
+  createdAt DateTime  @default(now())
+  answers   UserAnswer[]
+}
+
+model UserAnswer {
+  id         Int       @id @default(autoincrement())
+  testResultId Int
+  testResult   TestResult @relation(fields: [testResultId], references: [id])
+  questionId Int
+  question   Question  @relation(fields: [questionId], references: [id])
+  answerId   Int
+  answer     Answer    @relation(fields: [answerId], references: [id])
+  isCorrect  Boolean
+}
+
 
 
 

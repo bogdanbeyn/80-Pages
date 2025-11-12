@@ -12,10 +12,12 @@ const commentValidation = [
   body('parentId').optional().isInt({ min: 1 }).withMessage('Valid parent comment ID is required')
 ];
 
+const bannedWords = ['дурак', 'тупой', 'идиот', 'ненавижу'];
+
 // все комментарии
 router.get('/all', authMiddleware, moderOrAdmin, async (req, res) => {
   try {
-    const { pageId } = req.query;
+    const { pageId, flaggedOnly } = req.query;
 
     const where = {};
 
@@ -23,11 +25,15 @@ router.get('/all', authMiddleware, moderOrAdmin, async (req, res) => {
       where.pageId = parseInt(pageId);
     }
 
+    if (flaggedOnly === 'true') {
+      where.isFlagged = true;
+    }
+
     const comments = await prisma.comment.findMany({
       where,
       include: {
         _count: { select: { replies: true } },
-        user: { select: { id: true, name: true } },
+        user: { select: { id: true, name: true, role: true } },
         page: { select: { id: true, title: true } }
       },
       orderBy: { createdAt: 'desc' }
@@ -41,30 +47,30 @@ router.get('/all', authMiddleware, moderOrAdmin, async (req, res) => {
 });
 
 
+
 // комментарии для страницы
-router.get('/page/:pageId', async (req, res) => {
+router.get('/page/:pageId', authMiddleware, async (req, res) => {
   try {
     const pageId = parseInt(req.params.pageId);
-    
     if (isNaN(pageId)) {
       return res.status(400).json({ message: 'Invalid page ID' });
     }
 
+    const isAdmin = req.user?.role === 'ADMIN' || req.user?.role === 'MODER';
+
     const comments = await prisma.comment.findMany({
-      where: { 
+      where: {
         pageId,
-        parentId: null // только родительские комментарии
+        parentId: null,
+        ...(isAdmin ? {} : { isFlagged: false }) // 👈 фильтрация для обычных
       },
       include: {
-        user: {
-          select: { id: true, name: true }
-        },
+        user: { select: { id: true, name: true } },
         replies: {
+          where: isAdmin ? {} : { isFlagged: false }, // 👈 фильтрация вложенных
           include: {
-            _count: { select: {replies: true}},
-            user: {
-              select: { id: true, name: true }
-            }
+            _count: { select: { replies: true } },
+            user: { select: { id: true, name: true } }
           },
           orderBy: { createdAt: 'asc' }
         }
@@ -72,12 +78,13 @@ router.get('/page/:pageId', async (req, res) => {
       orderBy: { createdAt: 'desc' }
     });
 
-    res.json({comments});
+    res.json({ comments });
   } catch (error) {
     console.error('Get comments error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // создание (только авториз)
 router.post('/', authMiddleware, commentValidation, async (req, res) => {
@@ -91,6 +98,8 @@ router.post('/', authMiddleware, commentValidation, async (req, res) => {
     }
 
     const { text, pageId, parentId } = req.body;
+    const lowerText = text.toLowerCase();
+    const containsBanned = bannedWords.some(word => lowerText.includes(word));
 
     // существует ли страница
     const page = await prisma.page.findUnique({
@@ -117,7 +126,8 @@ router.post('/', authMiddleware, commentValidation, async (req, res) => {
         text,
         pageId: parseInt(pageId),
         userId: req.user.id,
-        parentId: parentId ? parseInt(parentId) : null
+        parentId: parentId ? parseInt(parentId) : null,
+        isFlagged: containsBanned
       },
       include: {
         user: {
@@ -126,12 +136,34 @@ router.post('/', authMiddleware, commentValidation, async (req, res) => {
       }
     });
 
+    if (containsBanned) {
+      return res.status(201).json({
+        message: 'Комментарий отправлен на модерацию',
+        flagged: true,
+        comment
+      });
+    }
+
     res.status(201).json({
       message: 'Comment created successfully',
+      flagged: false,
       comment
     });
   } catch (error) {
     console.error('Create comment error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.patch('/:id/approve', authMiddleware, moderOrAdmin, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const updated = await prisma.comment.update({
+      where: { id },
+      data: { isFlagged: false }
+    });
+    res.json({ message: 'Comment approved succesfully', updated });
+  } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 });
