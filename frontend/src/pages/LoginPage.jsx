@@ -165,6 +165,7 @@ const LoginPage = () => {
             <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">Демо-аккаунты:</h3>
             <div className="text-xs text-blue-700 dark:text-blue-400 space-y-1">
               <p><strong>Администратор:</strong> admin@example.com / password123</p>
+              <p><strong>Модератор:</strong> moder@example.com / password123</p>
               <p><strong>Пользователь:</strong> user@example.com / password123</p>
             </div>
           </div>

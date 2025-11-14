@@ -109,6 +109,9 @@ export const AuthProvider = ({ children }) => {
       case 'Wrong password':
         translatedMessage = t('wrongPassword');
         break;
+      case 'Account is disabled':
+        translatedMessage = t('accountDisabled');
+        break;
       default:
         translatedMessage = t['login failed'] || 'Login failed';
       }
@@ -149,9 +152,15 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'CLEAR_ERROR' });
   }, []);
 
+  const isModer = useCallback(() => {
+    return state.user?.role === 'MODER';
+  }, [state.user?.role]);
+
   const isAdmin = useCallback(() => {
     return state.user?.role === 'ADMIN';
   }, [state.user?.role]);
+
+
 
   const value = {
     ...state,
@@ -159,6 +168,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     clearError,
+    isModer,
     isAdmin,
   };
 

@@ -10,17 +10,33 @@ const HomePage = () => {
 
   useEffect(() => {
     categoriesAPI.getCategories().then((res) => {
-      setCategories(res.data);
+      setCategories(res.data.categories);
     });
   }, []);
 
-  const icons = {
-    Город: '🏰',
-    Герой: '👑',
-    Событие: '⚔️',
-    Письмо: '📜',
-    Памятник: '🗿',
-    Артефакт: '💎',
+    const categoryMap = {
+    city: { ru: 'Город', en: 'City', icon: '🏰' },
+    hero: { ru: 'Герой', en: 'Hero', icon: '👑' },
+    event: { ru: 'Событие', en: 'Event', icon: '⚔️' },
+    letter: { ru: 'Письмо', en: 'Letter', icon: '📜' },
+    monument: { ru: 'Памятник', en: 'Monument', icon: '🗿' },
+    artifact: { ru: 'Артефакт', en: 'Artifact', icon: '💎' },
+  };
+
+  const normalize = (s) => String(s || '').trim().toLowerCase();
+
+  const getCategoryKey = (name) => {
+    const n = normalize(name);
+    const found = Object.keys(categoryMap).find((k) => {
+      const { ru, en } = categoryMap[k];
+      return [normalize(ru), normalize(en)].includes(n);
+    });
+    return found || 'city';
+  };
+
+    const getCategoryIcon = (categoryName) => {
+    const key = getCategoryKey(categoryName);
+    return categoryMap[key]?.icon || '📄';
   };
 
   const colors = {
@@ -160,8 +176,11 @@ const HomePage = () => {
           
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
       {categories.map((category) => {
-        const name = language === 'ru' ? category.name : category.name_en;
-        const icon = icons[category.name] || '📁';
+        const name = (() => {
+                const key = getCategoryKey(category?.name);
+                return language === 'ru' ? categoryMap[key].ru : categoryMap[key].en;
+              })();
+        const icon = getCategoryIcon(category.name);
         const color = colors[category.name] || 'from-gray-500 to-gray-600';
         const count = category._count?.pages || 0;
 

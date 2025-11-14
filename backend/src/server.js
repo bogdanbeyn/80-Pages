@@ -9,6 +9,8 @@ const pageRoutes = require('./routes/pages');
 const categoryRoutes = require('./routes/categories');
 const commentRoutes = require('./routes/comments');
 const uploadRoutes = require('./routes/upload');
+const userRoutes = require('./routes/users');
+const testRoutes = require('./routes/tests');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,7 +27,10 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // стат файлы
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', (req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+}, express.static(path.join(__dirname, '../uploads')));
 
 // роуты
 app.use('/api/auth', authRoutes);
@@ -33,6 +38,8 @@ app.use('/api/pages', pageRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/tests', testRoutes);
 
 // health check
 app.get('/api/health', (req, res) => {

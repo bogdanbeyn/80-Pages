@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, User, MessageCircle, ArrowRight } from 'lucide-react';
+import { Calendar, User, MessageCircle, ArrowRight, EyeIcon } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const PageCard = ({ page }) => {
@@ -45,6 +45,19 @@ const PageCard = ({ page }) => {
     return categoryMap[key]?.icon || '📄';
   };
 
+
+  const getImagePath = (path) => {
+        if (!path) return null;
+        
+        if (path.startsWith('http://') || path.startsWith('https://')) {
+            return path; // Это полный URL
+        }
+        
+        return `http://localhost:5000${path}`;
+    };
+
+    const imageUrl = getImagePath(page.imagePath);
+
   return (
     <Link to={`/pages/${page.id}`} className="group">
       <div className="page-card">
@@ -52,7 +65,7 @@ const PageCard = ({ page }) => {
         <div className="relative h-48 bg-gray-200 overflow-hidden">
           {page.imagePath ? (
             <img
-              src={`${page.imagePath}`}
+              src={imageUrl}
               alt={page.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               onError={(e) => {
@@ -68,16 +81,21 @@ const PageCard = ({ page }) => {
             {getCategoryIcon(page.category.name)}
           </div>
           
-          {/* ctg badge */}
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 right-3 flex justify-between items-center">
             <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-gray-900/90 dark:text-gray-300">
-               {(() => {
+              {(() => {
                 const key = getCategoryKey(page.category?.name);
                 return language === 'ru' ? categoryMap[key].ru : categoryMap[key].en;
               })()}
             </span>
+
+            <span className="flex items-center gap-1 bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-gray-900/90 dark:text-gray-300">
+              <EyeIcon className="w-4 h-4" />
+              {typeof page?.views === 'number' ? page.views : '0'}
+            </span>
           </div>
-        </div>
+          </div>
+
 
         {/* content */}
         <div className="p-6">

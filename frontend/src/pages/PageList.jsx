@@ -7,7 +7,7 @@ import PageCard from '../components/PageCard';
 import { useLocation } from 'react-router-dom';
 
 const PageList = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [pages, setPages] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +59,7 @@ const PageList = () => {
 
       setPages(pagesResponse.data.pages);
       setPagination(pagesResponse.data.pagination);
-      setCategories(categoriesResponse.data);
+      setCategories(categoriesResponse.data.categories);
     } catch (err) {
       setError('Ошибка при загрузке данных');
       console.error('Error fetching data:', err);
@@ -93,6 +93,26 @@ if (isInitial) {
       page: newPage,
     }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+    const categoryMap = {
+    city: { ru: 'Город', en: 'City', icon: '🏰' },
+    hero: { ru: 'Герой', en: 'Hero', icon: '👑' },
+    event: { ru: 'Событие', en: 'Event', icon: '⚔️' },
+    letter: { ru: 'Письмо', en: 'Letter', icon: '📜' },
+    monument: { ru: 'Памятник', en: 'Monument', icon: '🗿' },
+    artifact: { ru: 'Артефакт', en: 'Artifact', icon: '💎' },
+  };
+
+  const normalize = (s) => String(s || '').trim().toLowerCase();
+
+  const getCategoryKey = (name) => {
+    const n = normalize(name);
+    const found = Object.keys(categoryMap).find((k) => {
+      const { ru, en } = categoryMap[k];
+      return [normalize(ru), normalize(en)].includes(n);
+    });
+    return found || 'city';
   };
 
 if (loading && pages.length === 0) {
@@ -162,11 +182,15 @@ if (loading && pages.length === 0) {
                 className="input-field pl-10 appearance-none dark:bg-gray-700/90"
               >
                 <option value="">{t('pagesFilterByCategory')}</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name} ({category._count.pages})
-                  </option>
-                ))}
+                {categories.map((category) => {
+                  const key = getCategoryKey(category.name);
+                  return (
+                    <option key={category.id} value={category.id}>
+                      {language === 'ru' ? categoryMap[key].ru : categoryMap[key].en} ({category._count.pages})
+                    </option>
+                  );
+                })}
+
               </select>
             </div>
           </div>

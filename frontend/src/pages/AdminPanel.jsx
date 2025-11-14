@@ -1,15 +1,27 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { pagesAPI, commentsAPI } from '../services/api';
+import { pagesAPI, commentsAPI, usersAPI, uploadAPI } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Edit, Trash2, Eye, MessageCircle, Calendar, User } from 'lucide-react';
+import ModalConfirm from '../components/Modal/ModalConfirm';
+import ModalForm from '../components/Modal/ModalForm';
+import { Edit, Trash2, Eye, MessageCircle, Calendar, User, Trash, DeleteIcon, PowerIcon, CheckIcon, XIcon, SquarePenIcon } from 'lucide-react';
 
 const AdminPanel = () => {
   const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState('pages');
   const [pages, setPages] = useState([]);
   const [comments, setComments] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+  title: '',
+  message: '',
+  onConfirm: () => {}
+});
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [pageToEdit, setPageToEdit] = useState(null);
+
 
   useEffect(() => {
     fetchData();
@@ -18,14 +30,12 @@ const AdminPanel = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      if (activeTab === 'pages') {
-        const response = await pagesAPI.getPages({ limit: 100 });
-        setPages(response.data.pages);
-      } else {
-        // получаем все комментарии через новый API
-        const response = await commentsAPI.getAllComments();
-        setComments(response.data);
-      }
+      const response = await pagesAPI.getPages({ limit: 100 });
+      setPages(response.data.pages);
+      const commentsResponse = await commentsAPI.getAllComments({});
+      setComments(commentsResponse.data.comments);
+      const userResponse = await usersAPI.getAllUsers();
+      setUsers(userResponse.data);
     } catch (err) {
       setError('Ошибка при загрузке данных');
       console.error('Error fetching data:', err);
@@ -35,28 +45,38 @@ const AdminPanel = () => {
   };
 
   const handleDeletePage = async (pageId) => {
-    if (!window.confirm('Вы уверены, что хотите удалить эту страницу?')) {
-      return;
-    }
-
     try {
       await pagesAPI.deletePage(pageId);
       setPages(pages.filter(page => page.id !== pageId));
     } catch (err) {
-      setError('Ошибка при удалении страницы');
+      setError(language === 'ru' ? 'Ошибка при удалении страницы' : 'Deleting page error');
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!window.confirm('Вы уверены, что хотите удалить этот комментарий?')) {
-      return;
-    }
-
     try {
       await commentsAPI.deleteComment(commentId);
       setComments(comments.filter(comment => comment.id !== commentId));
     } catch (err) {
-      setError('Ошибка при удалении комментария');
+      setError(language === 'ru' ? 'Ошибка при удалении комментария' : 'Deleting comment error');
+    }
+  };
+
+  const handleDisableUser = async (userId) => {
+    try {
+      await usersAPI.deleteUser(userId);
+      setUsers(users.filter(user => user.id !== userId));
+    } catch (err) {
+      setError(language === 'ru' ? 'Ошибка при отключении пользователя' : 'Disabling user error');
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    try {
+      await usersAPI.deleteUserPerm(userId);
+      setUsers(users.filter(user => user.id !== userId));
+    } catch (err) {
+      setError(language === 'ru' ? 'Ошибка при удалении пользователя' : 'Deleting user error');
     }
   };
 
@@ -79,6 +99,86 @@ const AdminPanel = () => {
     });
   };
 
+    const categoryMap = {
+    city: { ru: 'Город', en: 'City'},
+    hero: { ru: 'Герой', en: 'Hero' },
+    event: { ru: 'Событие', en: 'Event'},
+    letter: { ru: 'Письмо', en: 'Letter'},
+    monument: { ru: 'Памятник', en: 'Monument' },
+    artifact: { ru: 'Артефакт', en: 'Artifact' },
+  };
+
+  const normalize = (s) => String(s || '').trim().toLowerCase();
+
+  const getCategoryKey = (name) => {
+    const n = normalize(name);
+    const found = Object.keys(categoryMap).find((k) => {
+      const { ru, en } = categoryMap[k];
+      return [normalize(ru), normalize(en)].includes(n);
+    });
+    return found || 'city';
+  };
+
+
+const openConfirmModal = ({ title, message, onConfirm }) => {
+  setModalConfig({ title, message, onConfirm });
+  setModalOpen(true);
+};
+
+const openEditModal = (page) => {
+  setPageToEdit({
+    ...page,
+    category: page.category.name || '',
+    content: page.content || '',
+    imagePath: page.imagePath || ''
+  });
+  setEditModalOpen(true);
+};
+
+const handleUpdatePage = async (formData) => {
+  try {
+    let imagePath = formData.imagePath;
+
+    if (formData.imageFile) {
+      const uploadRes = await uploadAPI.uploadImage(formData.imageFile instanceof FormData
+        ? formData.imageFile
+        : (() => {
+            const fd = new FormData();
+            fd.append('image', formData.imageFile);
+            return fd;
+          })()
+      );
+      imagePath = uploadRes.data.imagePath;
+    }
+
+    const payload = {
+      title: formData.title,
+      content: formData.content,
+      categoryId: parseInt(formData.categoryId),
+      imagePath
+    };
+
+    await pagesAPI.updatePage(pageToEdit.id, payload);
+    setPages(prev => prev.map(p => (p.id === pageToEdit.id ? { ...p, ...payload } : p)));
+    setEditModalOpen(false);
+    setPageToEdit(null);
+  } catch (err) {
+    setError('Ошибка при обновлении страницы');
+  }
+};
+
+  const getImagePath = (path) => {
+        if (!path) return null;
+        
+        if (path.startsWith('http://') || path.startsWith('https://')) {
+            return path; 
+        }
+        
+        return `http://localhost:5000${path}`;
+    };
+
+
+
 
   const headersPages = language === 'ru'
   ? ['Название', 'Автор', 'Категория', 'Дата', 'Комментарии', 'Действия']
@@ -87,6 +187,10 @@ const AdminPanel = () => {
   const headersComments = language === 'ru'
   ? ['Комментарий', 'Автор', 'Страница', 'Дата', 'Действия']
   : ['Comment', 'Author', 'Page', 'Date', 'Actions'];
+
+  const headersUsers = language === 'ru'
+  ? ['Имя', 'Почта', 'Роль', 'Комментарии', 'Дата регистрации', 'Статус', 'Действия']
+  : ['Name', 'Email', 'Role', 'Comments', 'Registration date', 'Status', 'Actions'];
 
   if (loading) {
     return (
@@ -97,7 +201,30 @@ const AdminPanel = () => {
   }
 
   return (
+    
     <div className="space-y-8">
+      <ModalConfirm
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={modalConfig.onConfirm}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        confirmText={t('delete')}
+        cancelText={t('cancel')}
+      />
+      <ModalForm
+        isOpen={editModalOpen}
+        onClose={() => {
+          setEditModalOpen(false);
+          setPageToEdit(null);
+        }}
+        onSubmit={handleUpdatePage}
+        initialData={pageToEdit}
+        title={t('editPageTitle')}
+        confirmText={t('save')}
+        cancelText={t('cancel')}
+      />
+
       {/* head */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -131,6 +258,16 @@ const AdminPanel = () => {
           >
             {t('comments')} ({comments.length})
           </button>
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'users'
+                ? 'border-red-500 text-red-600 dark:text-red-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300'
+            }`}
+          >
+            {t('users')} ({users.length})
+          </button>
         </nav>
       </div>
 
@@ -163,7 +300,7 @@ const AdminPanel = () => {
                           {page.imagePath ? (
                             <img
                               className="h-10 w-10 rounded-lg object-cover"
-                              src={`${page.imagePath}`}
+                              src={getImagePath(page.imagePath)}
                               alt={page.title}
                             />
                           ) : (
@@ -174,7 +311,10 @@ const AdminPanel = () => {
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900 max-w-xs truncate dark:text-gray-300">
-                            {page.title}
+                            <a
+                              href={`/pages/${page.id}`}
+                              className="text-primary-600 hover:text-primary-900"
+                            >{page.title}</a>
                           </div>
                         </div>
                       </div>
@@ -184,7 +324,10 @@ const AdminPanel = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-gray-500 dark:text-gray-800">
-                        {page.category.name}
+                      {(() => {
+                        const key = getCategoryKey(page.category?.name);
+                        return language === 'ru' ? categoryMap[key].ru : categoryMap[key].en;
+                      })()}
                       </span>
 
                     </td>
@@ -197,14 +340,21 @@ const AdminPanel = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
-                        <a
-                          href={`/pages/${page.id}`}
-                          className="text-primary-600 hover:text-primary-900"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </a>
                         <button
-                          onClick={() => handleDeletePage(page.id)}
+                          onClick={() => openEditModal(page)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          <SquarePenIcon className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => openConfirmModal({
+                          title: t('confirmPageDelete'),
+                          message: t('deleteWarning'),
+                          onConfirm: async () => {
+                            await handleDeletePage(page.id);
+                            setModalOpen(false);
+                          }
+                        })}
                           className="text-red-600 hover:text-red-900"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -217,7 +367,7 @@ const AdminPanel = () => {
             </table>
           </div>
         </div>
-      ) : (
+      ) : activeTab === 'comments' ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800/90 dark:border-gray-600">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
@@ -240,14 +390,24 @@ const AdminPanel = () => {
                       {comment.user.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {comment.page.title}
+                      <a
+                        href={`/pages/${comment.page.id}`}
+                        className="text-primary-600 hover:text-primary-900"
+                      >{comment.page.title}</a>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {language === 'ru' ? formatDateRu(comment.createdAt) : formatDateEn(comment.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                        onClick={() => handleDeleteComment(comment.id)}
+                        onClick={() => openConfirmModal({
+                          title: t('confirmCommentDelete'),
+                          message: t('deleteWarning'),
+                          onConfirm: async () => {
+                            await handleDeleteComment(comment.id);
+                            setModalOpen(false);
+                          }
+                        })}
                         className="text-red-600 hover:text-red-900"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -258,6 +418,78 @@ const AdminPanel = () => {
               </tbody>
             </table>
           </div>
+        </div>
+        ) : (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800/90 dark:border-gray-600">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+<tr>
+        {headersUsers.map(h => (
+          <th key={h} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{h}</th>
+        ))}
+      </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-600 dark:bg-gray-700/90">
+                {users.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900 max-w-md dark:text-gray-300 ">
+                        {user.name}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-400 ">
+                      {user.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {user.role}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {user._count?.comments || 0}
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {language === 'ru' ? formatDateRu(user.createdAt) : formatDateEn(user.createdAt)}
+                    </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {user.isDisable ? <XIcon className='h-4 w-4'/>  : <CheckIcon className='h-4 w-4'/>}
+                    </td>
+<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+  <div className="flex space-x-2">
+                        <button
+                          onClick={() => openConfirmModal({
+                          title: t('confirmUserDisabling'),
+                          message: t('disableWarning'),
+                          onConfirm: async () => {
+                            await handleDeleteUser(user.id);
+                            setModalOpen(false);
+                          }
+                        })}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          <PowerIcon className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => openConfirmModal({
+                          title: t('confirmUserDelete'),
+                          message: t('deleteWarning'),
+                          onConfirm: async () => {
+                            await handleDeleteUser(user.id);
+                            setModalOpen(false);
+                          }
+                        })}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                        </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
         </div>
       )}
 

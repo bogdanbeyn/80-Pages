@@ -16,9 +16,16 @@ const translations = {
     home: 'Главная',
     pages: 'Страницы',
     admin: 'Админ',
+    moder: 'Модератор',
     login: 'Войти',
     register: 'Регистрация',
     logout: 'Выйти',
+    confirmPageDelete: 'Вы уверены, что хотите удалить эту страницу?',
+    confirmCommentDelete: 'Вы уверены, что хотите удалить этот комментарий?',
+    confirmUserDelete: 'Вы уверены, что хотите удалить этого пользователя?',
+    confirmUserDisabling: 'Вы уверены, что хотите отключить этого пользователя?',
+    deleteWarning: 'После нажатия на "Удалить", вы не сможете восстановить элемент!',
+    disableWarning: 'Пользователь не сможет войти в систему и оставлять комментарии',
     
     // Common
     loading: 'Загрузка...',
@@ -35,6 +42,12 @@ const translations = {
     gpw: 'Великая Отечественная Война',
     userNotFound: 'Пользователь не найден',
     wrongPassword: 'Неправильный пароль',
+    title: 'Название',
+    category: 'Категория',
+    image: 'Изображение',
+    file: 'Файл',
+    content: 'Контент',
+    contentTip: 'Введите текст страницы',
     
     // Pages
     pageTitle: '80 страниц истории Победы',
@@ -59,9 +72,25 @@ const translations = {
     pagesTitle: 'Исторические страницы',
     pagesDescription: 'Исследуйте 80 важных страниц истории победы. Каждая страница рассказывает уникальную историю о событиях, людях и местах, которые сформировали нашу страну.',
     pagesSearch: 'Поиск по названию или содержанию...',
+    commentsSearch: 'Поиск по автору или содержанию...',
     pagesFilterByCategory: 'Все категории',
+    commentsFilterByPage: 'Все страницы',
     pagesFound: 'Найдено страниц',
     readMore: 'Читать далее',
+    views: 'Просмотры',
+    users: 'Пользователи',
+    accountDisabled: 'Ваш аккаунт отключен. Если вы считаете, что произошла ошибка, обратитесь в поддержку.',
+
+    // Tests
+    tests: 'Тесты',
+    question: 'Вопрос',
+    testsTitle: 'Проверь себя',
+    testsDescription: 'Здесь собраны все тесты посвященные истории Великой Победы',
+    submitAnswer: 'Отправить',
+    backToTests: 'Вернуться к Тестам',
+    yourResult: 'Ваш результат',
+    thanksForTest: 'Спасибо за прохождение теста',
+    redirectMessage: 'Вы будете автоматически еренаправлены через 10 секунд',
 
     // Categories
     city: 'Город',
@@ -94,16 +123,25 @@ const translations = {
     
     // Admin
     panel: 'Панель',
-    managePagesAndComments: 'Управление страницами и комментариями'
+    managePagesAndComments: 'Управление страницами и комментариями',
+    manageComments: 'Управление комментариями',
+    editPageTitle: 'Редактирование страницы'
   },
   en: {
     // Navigation
     home: 'Home',
     pages: 'Pages',
     admin: 'Admin',
+    moder: 'Moderator',
     login: 'Login',
     register: 'Register',
     logout: 'Logout',
+    confirmPageDelete: 'Do you really want to delete this page?',
+    confirmCommentDelete: 'Do you really want to delete this comment?',
+    confirmUserDelete: 'Do you really want to delete this user?',
+    confirmUserDisabling: 'Do you really want to disable this user?',
+    deleteWarning: 'You woudn\'t restore it after the deleting.',
+    disableWarning: 'The user cannot log in and leave comments',
     
     // Common
     loading: 'Loading...',
@@ -120,7 +158,13 @@ const translations = {
     gpw: 'Great Patriotic War',
     userNotFound: 'User not found',
     wrongPassword: 'Wrong password',
-    
+    title: 'Title',
+    category: 'Category',
+    image: 'Image',
+    file: 'File',
+    content: 'Content',
+    contentTip: 'Enter the text of page',
+
     // Pages
     pageTitle: '80 pages of Victory history',
     pageSubtitle: 'Learn the history of the Great Victory',
@@ -144,9 +188,25 @@ const translations = {
     pagesTitle: 'Historical Pages',
     pagesDescription: 'Explore 80 significant pages of victory history. Each page tells a unique story about events, people, and places that shaped our country.',
     pagesSearch: 'Search by title or content...',
+    commentsSearch: 'Search by author or content...',
     pagesFilterByCategory: 'All categories',
+    commentsFilterByPage: 'All pages',
     pagesFound: 'Pages found',
     readMore: 'Read more',
+    views: 'Views',
+    users: 'Users',
+    accountDisabled: 'Your account is disabled. If you believe an error has occurred, please contact support.',
+
+    // Tests
+    tests: 'Tests',
+    question: 'Question',
+    testsTitle: 'Test yourself',
+    testsDescription: 'Here are collected all the tests dedicated to the history of the Great Victory',
+    submitAnswer: 'Sumbit',
+    backToTests: 'Back to Tests',
+    yourResult: 'Your result',
+    thanksForTest: 'Thanks for taking the test',
+    redirectMessage: 'You will be automatically redirected back in 10 seconds',
     
     // Categories
     city: 'City',
@@ -179,7 +239,9 @@ const translations = {
     
     // Admin
     panel: 'Panel',
-    managePagesAndComments: 'Manage pages and comments'
+    managePagesAndComments: 'Manage pages and comments',
+    manageComments: 'Manage comments',
+    editPageTitle: 'Page editing'
   }
 };
 
