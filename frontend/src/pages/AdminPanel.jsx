@@ -161,11 +161,21 @@ const handleUpdatePage = async (formData) => {
     await pagesAPI.updatePage(pageToEdit.id, payload);
     setPages(prev => prev.map(p => (p.id === pageToEdit.id ? { ...p, ...payload } : p)));
     setEditModalOpen(false);
+    setPageToEdit(null);
   } catch (err) {
     setError('Ошибка при обновлении страницы');
   }
 };
 
+  const getImagePath = (path) => {
+        if (!path) return null;
+        
+        if (path.startsWith('http://') || path.startsWith('https://')) {
+            return path; 
+        }
+        
+        return `http://localhost:5000${path}`;
+    };
 
 
 
@@ -204,7 +214,10 @@ const handleUpdatePage = async (formData) => {
       />
       <ModalForm
         isOpen={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
+        onClose={() => {
+          setEditModalOpen(false);
+          setPageToEdit(null);
+        }}
         onSubmit={handleUpdatePage}
         initialData={pageToEdit}
         title={t('editPageTitle')}
@@ -287,7 +300,7 @@ const handleUpdatePage = async (formData) => {
                           {page.imagePath ? (
                             <img
                               className="h-10 w-10 rounded-lg object-cover"
-                              src={`http://localhost:5000${page.imagePath}`}
+                              src={getImagePath(page.imagePath)}
                               alt={page.title}
                             />
                           ) : (

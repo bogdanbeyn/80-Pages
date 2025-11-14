@@ -83,8 +83,14 @@ const translations = {
 
     // Tests
     tests: 'Тесты',
+    question: 'Вопрос',
     testsTitle: 'Проверь себя',
     testsDescription: 'Здесь собраны все тесты посвященные истории Великой Победы',
+    submitAnswer: 'Отправить',
+    backToTests: 'Вернуться к Тестам',
+    yourResult: 'Ваш результат',
+    thanksForTest: 'Спасибо за прохождение теста',
+    redirectMessage: 'Вы будете автоматически еренаправлены через 10 секунд',
 
     // Categories
     city: 'Город',
@@ -193,8 +199,14 @@ const translations = {
 
     // Tests
     tests: 'Tests',
+    question: 'Question',
     testsTitle: 'Test yourself',
     testsDescription: 'Here are collected all the tests dedicated to the history of the Great Victory',
+    submitAnswer: 'Sumbit',
+    backToTests: 'Back to Tests',
+    yourResult: 'Your result',
+    thanksForTest: 'Thanks for taking the test',
+    redirectMessage: 'You will be automatically redirected back in 10 seconds',
     
     // Categories
     city: 'City',

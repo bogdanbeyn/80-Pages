@@ -13,9 +13,9 @@ const CommentList = ({ comments, pageId, onCommentAdded }) => {
 
   const formatDateRu = (dateString) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -23,9 +23,9 @@ const CommentList = ({ comments, pageId, onCommentAdded }) => {
 
   const formatDateEn = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-EN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
     });

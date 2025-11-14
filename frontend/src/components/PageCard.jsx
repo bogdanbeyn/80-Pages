@@ -45,6 +45,19 @@ const PageCard = ({ page }) => {
     return categoryMap[key]?.icon || '📄';
   };
 
+
+  const getImagePath = (path) => {
+        if (!path) return null;
+        
+        if (path.startsWith('http://') || path.startsWith('https://')) {
+            return path; // Это полный URL
+        }
+        
+        return `http://localhost:5000${path}`;
+    };
+
+    const imageUrl = getImagePath(page.imagePath);
+
   return (
     <Link to={`/pages/${page.id}`} className="group">
       <div className="page-card">
@@ -52,7 +65,7 @@ const PageCard = ({ page }) => {
         <div className="relative h-48 bg-gray-200 overflow-hidden">
           {page.imagePath ? (
             <img
-              src={`http://localhost:5000${page.imagePath}`}
+              src={imageUrl}
               alt={page.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               onError={(e) => {

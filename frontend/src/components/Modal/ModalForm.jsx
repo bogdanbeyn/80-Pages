@@ -18,10 +18,11 @@ const ModalForm = ({
     category: '',
     content: '',
     imagePath: '',
-    imageFile: null
+    imageFile: null,
+    categoryId: '' 
   });
 
-const [useFileUpload, setUseFileUpload] = useState(false);
+const [useFileUpload, setUseFileUpload] = useState(true);
 const {t, language} = useLanguage()
 const [categories, setCategories] = useState([]);
 
@@ -45,10 +46,9 @@ useEffect(() => {
     title: initialData?.title || '',
     content: initialData?.content || '',
     imagePath: initialData?.imagePath || '',
-    categoryId: initialData?.category?.id || '',
+    categoryId: String(initialData?.category?.id || ''),
     imageFile: null
   });
-  setUseFileUpload(true);
 }, [initialData]);
 
     const categoryMap = {
@@ -120,7 +120,7 @@ useEffect(() => {
             >
                 <option value="">Выберите категорию</option>
                 {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>
+                  <option key={cat.id} value={String(cat.id)}>
                     {(() => {
                         const key = getCategoryKey(cat.name);
                         return language === 'ru' ? categoryMap[key].ru : categoryMap[key].en;
@@ -154,6 +154,7 @@ useEffect(() => {
 
             {useFileUpload ? (
             <input
+                key="file-input"
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
@@ -162,6 +163,7 @@ useEffect(() => {
 
             ) : (
               <input
+                key="path-input"
                 type="text"
                 name="imagePath"
                 value={formData.imagePath}
