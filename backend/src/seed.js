@@ -156,25 +156,25 @@ async function main() {
 
     console.log('Категории созданы');
 
-    // // создаем страницы
-    // const categoryMap = {};
-    // categories.forEach(cat => {
-    //   categoryMap[cat.name] = cat.id;
-    // });
+    // создаем страницы
+    const categoryMap = {};
+    categories.forEach(cat => {
+      categoryMap[cat.name] = cat.id;
+    });
 
-    // for (const pageData of pagesData) {
-    //     await prisma.page.create({
-    //         data: {
-    //         title: pageData.title,
-    //         content: pageData.content,
-    //         imagePath: pageData.imagePath,
-    //         categoryId: categoryMap[pageData.category],
-    //         createdById: admin.id
-    //         }
-    //     });
-    //     }
+    for (const pageData of pagesData) {
+        await prisma.page.create({
+            data: {
+            title: pageData.title,
+            content: pageData.content,
+            imagePath: pageData.imagePath,
+            categoryId: categoryMap[pageData.category],
+            createdById: admin.id
+            }
+        });
+        }
 
-    // console.log('✅ Страницы созданы');
+    console.log('✅ Страницы созданы');
 
     // // создаем комментарии
     // const pages = await prisma.page.findMany({ take: 5 });
