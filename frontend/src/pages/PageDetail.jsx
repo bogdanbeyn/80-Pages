@@ -70,6 +70,16 @@ const categoryMap = {
     return categoryMap[key]?.icon || '📄';
   };
 
+  const getImagePath = (path) => {
+      if (!path) return null;
+      
+      if (path.startsWith('http://') || path.startsWith('https://')) {
+          return path; 
+      }
+      
+      return `http://localhost:5000${path}`;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-64">
@@ -108,7 +118,7 @@ const categoryMap = {
         <div className="relative h-64 md:h-80 bg-gray-200">
           {page.imagePath ? (
             <img
-              src={`http://localhost:5000${page.imagePath}`}
+              src={getImagePath(page.imagePath)}
               alt={page.title}
               className="w-full h-full object-cover"
               onError={(e) => {
