@@ -111,7 +111,7 @@ model UserAnswer {
   questionId Int
   question   Question  @relation(fields: [questionId], references: [id])
   answerId   Int
-  answer     Answer    @relation(fields: [answerId], references: [id])
+  answer     Answer    @relation(fields: [answerId], references: [id], onDelete: Cascade)
   isCorrect  Boolean
 }
 

@@ -91,6 +91,13 @@ const translations = {
     yourResult: 'Ваш результат',
     thanksForTest: 'Спасибо за прохождение теста',
     redirectMessage: 'Вы будете автоматически еренаправлены через 10 секунд',
+    addTest: 'Добавить тест',
+    createTestTitle: 'Добавление теста',
+    testTitle: 'Название теста',
+    option: 'Вариант',
+    correct: 'Верный',
+    addQuestion: 'Добавить вопрос',
+    create: 'Добавить',
 
     // Categories
     city: 'Город',
@@ -207,6 +214,13 @@ const translations = {
     yourResult: 'Your result',
     thanksForTest: 'Thanks for taking the test',
     redirectMessage: 'You will be automatically redirected back in 10 seconds',
+    addTest: 'Add test',
+    createTestTitle: 'Adding test',
+    testTitle: 'Test title',
+    option: 'Option',
+    correct: 'Correct',
+    addQuestion: 'Add question',
+    create: 'Add',
     
     // Categories
     city: 'City',

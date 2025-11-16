@@ -81,7 +81,10 @@ const CommentList = ({ comments, pageId, onCommentAdded }) => {
             </div>
           </div>
           
-          <p className="text-gray-700 leading-relaxed mb-3 dark:text-gray-200">
+          <p className="text-gray-700 leading-relaxed mb-3 dark:text-gray-200 
+               break-words 
+               max-w-full 
+               overflow-hidden">
             {comment.text}
           </p>
 

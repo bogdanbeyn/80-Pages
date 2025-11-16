@@ -57,7 +57,11 @@ router.get('/', authMiddleware, async (req, res) => {
   try {
     const tests = await prisma.test.findMany({
       include: {
-        questions: true,
+        questions: {
+          include: {
+            answers: true
+          }
+        },
         results: true
       }
     });
@@ -101,8 +105,56 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+// обновление теста
+router.put('/:id', authMiddleware, adminOnly, testValidation, async (req, res) => {
+  try {
+    const testId = parseInt(req.params.id);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+    }
 
+    const { title, questions } = req.body;
 
+    await prisma.answer.deleteMany({
+      where: {
+        question: {
+          testId
+        }
+      }
+    });
+
+    await prisma.question.deleteMany({
+      where: { testId }
+    });
+
+    const updatedTest = await prisma.test.update({
+      where: { id: testId },
+      data: {
+        title,
+        questions: {
+          create: questions.map(q => ({
+            text: q.text,
+            answers: {
+              create: q.answers.map(a => ({
+                text: a.text,
+                isCorrect: a.isCorrect
+              }))
+            }
+          }))
+        }
+      },
+      include: {
+        questions: { include: { answers: true } }
+      }
+    });
+
+    res.json({ message: 'Test updated successfully', test: updatedTest });
+  } catch (error) {
+    console.error('Update test error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 
 // получение теста по айди с вопросами
@@ -203,5 +255,46 @@ router.get('/:id/results', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// удаление теста
+router.delete('/:id', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const testId = parseInt(req.params.id);
+
+    await prisma.userAnswer.deleteMany({
+      where: {
+        testResult: {
+          testId
+        }
+      }
+    });
+
+    await prisma.testResult.deleteMany({
+      where: { testId }
+    });
+
+    await prisma.answer.deleteMany({
+      where: {
+        question: {
+          testId
+        }
+      }
+    });
+
+    await prisma.question.deleteMany({
+      where: { testId }
+    });
+
+    await prisma.test.delete({
+      where: { id: testId }
+    });
+
+    res.json({ message: 'Test deleted successfully' });
+  } catch (error) {
+    console.error('Delete test error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;

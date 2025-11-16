@@ -93,8 +93,10 @@ export const testsAPI = {
   createTest: (testData) => api.post('/tests', testData),
   getAllTests: () => api.get('/tests'),
   getTest: (testId) => api.get(`/tests/${testId}`),
-  submitTest: (testId, data) => api.post(`/tests/${testId}/submit`, data),
-  getUserTestsResults: (userId) => api.get(`/tests/${userId}/results`)
+  submitTest: (testId, testData) => api.post(`/tests/${testId}/submit`, testData),
+  getUserTestsResults: (userId) => api.get(`/tests/${userId}/results`),
+  updateTest: (testId, testData) => api.put(`/tests/${testId}`, testData),
+  deleteTest: (testId) => api.delete(`/tests/${testId}`)
 }
 
 export default api;

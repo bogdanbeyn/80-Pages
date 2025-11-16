@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // <--- Добавил useNavigate
+import { useParams, useNavigate } from 'react-router-dom'; 
 import { testsAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const TestRunner = () => {
     const { id } = useParams();
-    const navigate = useNavigate(); // <--- Инициализация useNavigate
+    const navigate = useNavigate();
     const { user } = useAuth();
     const { t, language } = useLanguage();
 
@@ -17,14 +17,12 @@ const TestRunner = () => {
     const [submitted, setSubmitted] = useState(false);
     const [result, setResult] = useState(null);
 
-    // Логика автоматического редиректа через 10 секунд
     useEffect(() => {
         if (submitted) {
             const timer = setTimeout(() => {
-                navigate('/tests'); // Перенаправляем на /tests
-            }, 10000); // 10 секунд
+                navigate('/tests'); 
+            }, 10000); 
 
-            // Очистка таймера при размонтировании или досрочном переходе
             return () => clearTimeout(timer);
         }
     }, [submitted, navigate]);
@@ -53,7 +51,6 @@ const TestRunner = () => {
             setSelectedAnswer(null);
             setCurrentQuestion(currentIndex + 1);
         } else {
-            // финальный ответ + отправка
             const finalAnswers = [...answers, newAnswer];
             submitTest(finalAnswers);
         }
@@ -75,7 +72,6 @@ const TestRunner = () => {
 
     const currentQuestion = test.questions[currentIndex];
 
-    // Добавим перевод для "Ответить" и "Вернуться к тестам"
     const submitButtonText = t('submitAnswer') || (language === 'ru' ? 'Ответить' : 'Submit');
     const goBackButtonText = t('backToTests') || (language === 'ru' ? 'Вернуться к тестам' : 'Back to Tests');
 
@@ -97,7 +93,6 @@ const TestRunner = () => {
                             <button
                                 key={a.id}
                                 onClick={() => handleAnswerSelect(a.id)}
-                                // Заменил primary-600 на red-600 и т.п. для совместимости с вашими стилями
                                 className={`w-full text-left px-4 py-2 rounded-lg border transition-all duration-200 ${
                                     selectedAnswer === a.id
                                         ? 'border-red-600 bg-red-100 dark:bg-red-900/50 shadow-md'

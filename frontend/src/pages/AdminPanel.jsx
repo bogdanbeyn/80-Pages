@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { pagesAPI, commentsAPI, usersAPI, uploadAPI } from '../services/api';
+import { pagesAPI, commentsAPI, usersAPI, uploadAPI, testsAPI } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import ModalConfirm from '../components/Modal/ModalConfirm';
 import ModalForm from '../components/Modal/ModalForm';
+import ModalTestForm from '../components/Modal/ModalTestForm';
 import { Edit, Trash2, Eye, MessageCircle, Calendar, User, Trash, DeleteIcon, PowerIcon, CheckIcon, XIcon, SquarePenIcon } from 'lucide-react';
 
 const AdminPanel = () => {
@@ -21,6 +22,12 @@ const AdminPanel = () => {
 });
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [pageToEdit, setPageToEdit] = useState(null);
+  const [tests, setTests] = useState([]);
+  const [testToEdit, setTestToEdit] = useState(null);
+  const [editTestModalOpen, setEditTestModalOpen] = useState(false);
+  const [createTestModalOpen, setCreateTestModalOpen] = useState(false);
+
+
 
 
   useEffect(() => {
@@ -36,6 +43,9 @@ const AdminPanel = () => {
       setComments(commentsResponse.data.comments);
       const userResponse = await usersAPI.getAllUsers();
       setUsers(userResponse.data);
+      const testsResponse = await testsAPI.getAllTests({ limit: 100 });
+      setTests(testsResponse.data.tests);
+
     } catch (err) {
       setError('Ошибка при загрузке данных');
       console.error('Error fetching data:', err);
@@ -177,6 +187,77 @@ const handleUpdatePage = async (formData) => {
         return `http://localhost:5000${path}`;
     };
 
+const handleCreateTest = async (formData) => {
+  try {
+    const payload = {
+      title: formData.title,
+      questions: formData.questions
+    };
+    const res = await testsAPI.createTest(payload);
+    setTests(prev => [...prev, res.data.test]);
+    setCreateTestModalOpen(false);
+  } catch (err) {
+    const msg = err?.response?.data?.message || 'Ошибка при создании теста';
+    setError(msg);
+  }
+};
+
+
+
+const openEditTestModal = (test) => {
+  const normalizedQuestions = (test.questions || []).map(q => ({
+    text: q.text || '',
+    answers: (q.answers && Array.isArray(q.answers) && q.answers.length > 0)
+      ? q.answers.map(a => ({
+          text: a.text || '',
+          isCorrect: !!a.isCorrect
+        }))
+      : [
+          { text: '', isCorrect: false },
+          { text: '', isCorrect: false },
+          { text: '', isCorrect: false },
+          { text: '', isCorrect: false }
+        ]
+  }));
+
+  setTestToEdit({
+    id: test.id,
+    title: test.title || '',
+    questions: normalizedQuestions
+  });
+
+  setEditTestModalOpen(true);
+};
+
+
+
+const handleDeleteTest = async (testId) => {
+  try {
+    await testsAPI.deleteTest(testId);
+    setTests(prev => prev.filter(t => t.id !== testId));
+  } catch (err) {
+    setError(language === 'ru' ? 'Ошибка при удалении теста' : 'Deleting test error');
+  }
+};
+
+const handleUpdateTest = async (formData) => {
+  try {
+    const payload = {
+      title: formData.title,
+      questions: formData.questions
+    };
+    await testsAPI.updateTest(testToEdit.id, payload);
+    setTests(prev => prev.map(t => (t.id === testToEdit.id ? { ...t, ...payload } : t)));
+    setEditTestModalOpen(false);
+    setTestToEdit(null);
+  } catch (err) {
+    const msg = err?.response?.data?.message || 'Ошибка при обновлении теста';
+    setError(msg); 
+  }
+};
+
+
+
 
 
 
@@ -191,6 +272,10 @@ const handleUpdatePage = async (formData) => {
   const headersUsers = language === 'ru'
   ? ['Имя', 'Почта', 'Роль', 'Комментарии', 'Дата регистрации', 'Статус', 'Действия']
   : ['Name', 'Email', 'Role', 'Comments', 'Registration date', 'Status', 'Actions'];
+
+  const headersTests = language === 'ru'
+  ? ['Название', 'Кол-во вопросов', 'Действия']
+  : ['Title', 'Questions', 'Actions'];
 
   if (loading) {
     return (
@@ -224,6 +309,28 @@ const handleUpdatePage = async (formData) => {
         confirmText={t('save')}
         cancelText={t('cancel')}
       />
+      <ModalTestForm
+        isOpen={editTestModalOpen}
+        onClose={() => {
+          setEditTestModalOpen(false);
+          setTestToEdit(null);
+        }}
+        onSubmit={handleUpdateTest}
+        initialData={testToEdit}
+        title={t('editTestTitle')}
+        confirmText={t('save')}
+        cancelText={t('cancel')}
+      />
+      <ModalTestForm
+        isOpen={createTestModalOpen}
+        onClose={() => setCreateTestModalOpen(false)}
+        onSubmit={handleCreateTest}
+        initialData={null}
+        title={t('createTestTitle')}
+        confirmText={t('create')}
+        cancelText={t('cancel')}
+      />
+
 
       {/* head */}
       <div>
@@ -268,6 +375,16 @@ const handleUpdatePage = async (formData) => {
           >
             {t('users')} ({users.length})
           </button>
+          <button
+            onClick={() => setActiveTab('tests')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'tests'
+                ? 'border-red-500 text-red-600 dark:text-red-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300'
+            }`}
+          >
+            {t('tests')} ({tests.length})
+          </button>
         </nav>
       </div>
 
@@ -281,6 +398,11 @@ const handleUpdatePage = async (formData) => {
       {/* content */}
       {activeTab === 'pages' ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800/90 dark:border-gray-600">
+                            <div className="flex justify-between items-center px-6 py-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        {t('pages')}
+      </h2>
+    </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
               <thead className="bg-gray-50 dark:bg-gray-800">
@@ -369,6 +491,11 @@ const handleUpdatePage = async (formData) => {
         </div>
       ) : activeTab === 'comments' ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800/90 dark:border-gray-600">
+                            <div className="flex justify-between items-center px-6 py-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        {t('comments')}
+      </h2>
+    </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
               <thead className="bg-gray-50 dark:bg-gray-800">
@@ -419,8 +546,13 @@ const handleUpdatePage = async (formData) => {
             </table>
           </div>
         </div>
-        ) : (
+        ) : activeTab === 'users' ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800/90 dark:border-gray-600">
+                  <div className="flex justify-between items-center px-6 py-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        {t('users')}
+      </h2>
+    </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
               <thead className="bg-gray-50 dark:bg-gray-800">
@@ -491,7 +623,68 @@ const handleUpdatePage = async (formData) => {
           </div>
           
         </div>
-      )}
+      ) : activeTab === 'tests' && (
+        
+  <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800/90 dark:border-gray-600">
+        <div className="flex justify-between items-center px-6 py-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        {t('tests')}
+      </h2>
+      <button
+        onClick={() => setCreateTestModalOpen(true)}
+        className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-lg shadow-md hover:from-red-700 hover:to-orange-700 transition-all duration-200"
+      >
+        + {t('addTest')}
+      </button>
+    </div>
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+        <thead className="bg-gray-50 dark:bg-gray-800">
+        <tr>
+          {headersTests.map(h => (
+            <th key={h} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{h}</th>
+          ))}
+        </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-600 dark:bg-gray-700/90">
+          {tests.map((test) => (
+            <tr key={test.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                {test.title}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                {test.questions.length}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => openEditTestModal(test)}
+                    className="text-red-600 hover:text-red-900"
+                  >
+                    <SquarePenIcon className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => openConfirmModal({
+                      title: t('confirmTestDelete'),
+                      message: t('deleteWarning'),
+                      onConfirm: async () => {
+                        await handleDeleteTest(test.id);
+                        setModalOpen(false);
+                      }
+                    })}
+                    className="text-red-600 hover:text-red-900"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
 
       {/* empt state */}
       {((activeTab === 'pages' && pages.length === 0) || 

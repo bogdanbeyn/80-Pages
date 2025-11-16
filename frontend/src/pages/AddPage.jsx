@@ -39,7 +39,6 @@ const AddPage = () => {
       [e.target.name]: e.target.value,
     });
     
-    // убираем все ошибки валидации
     if (validationErrors[e.target.name]) {
       setValidationErrors({
         ...validationErrors,
@@ -51,13 +50,11 @@ const AddPage = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // валидация типа
       if (!file.type.startsWith('image/')) {
         setError('Пожалуйста, выберите изображение');
         return;
       }
       
-      // валидация размера (5 метров)
       if (file.size > 5 * 1024 * 1024) {
         setError('Размер файла не должен превышать 5MB');
         return;
@@ -65,7 +62,6 @@ const AddPage = () => {
 
       setImageFile(file);
       
-      // создание превью
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target.result);
@@ -117,14 +113,12 @@ const AddPage = () => {
     setError('');
 
     try {
-      // сначала загруз фото
       const formDataUpload = new FormData();
       formDataUpload.append('image', imageFile);
       
       const uploadResponse = await uploadAPI.uploadImage(formDataUpload);
       const imagePath = uploadResponse.data.imagePath;
 
-      // создание страницы
       const pageData = {
         title: formData.title.trim(),
         content: formData.content.trim(),
