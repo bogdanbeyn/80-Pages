@@ -7,7 +7,15 @@ const router = express.Router();
 // все пользователи (для админки)
 router.get('/all', authMiddleware, adminOnly, async (req, res) => {
   try {
-    const users = await prisma.user.findMany({orderBy: { createdAt: 'desc' }});
+    const users = await prisma.user.findMany(
+      {
+        include:{
+          _count: {
+            select: {comments: true}
+          }
+        },
+      orderBy: { createdAt: 'desc' }
+    });
 
     res.json(users);
   } catch (error) {
