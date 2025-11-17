@@ -221,6 +221,7 @@ if (loading && pages.length === 0) {
           {/* pagination */}
           {pagination.pages > 1 && (
             <div className="flex justify-center items-center space-x-2">
+              {/* Назад */}
               <button
                 onClick={() => handlePageChange(filters.page - 1)}
                 disabled={filters.page === 1}
@@ -228,33 +229,52 @@ if (loading && pages.length === 0) {
               >
                 {t('back')}
               </button>
-              
-              {Array.from({ length: Math.min(7, pagination.pages) }, (_, i) => {
-                const pageNum = i + 1;
+
+              {/* Предыдущая страница */}
+              {filters.page > 1 && (
+                <button
+                  onClick={() => handlePageChange(filters.page - 1)}
+                  className="px-3 py-2 text-sm font-medium rounded-lg text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800/90 dark:border-gray-600 dark:text-gray-300"
+                >
+                  {filters.page - 1}
+                </button>
+              )}
+
+              {/* Текущая страница */}
+              <button
+                disabled
+                className="px-3 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white"
+              >
+                {filters.page}
+              </button>
+
+              {/* Две следующие страницы */}
+              {Array.from({ length: 2 }, (_, i) => {
+                const pageNum = filters.page + i + 1;
                 return (
-                  <button
-                    key={pageNum}
-                    onClick={() => handlePageChange(pageNum)}
-                    className={`px-3 py-2 text-sm font-medium rounded-lg ${
-                      filters.page === pageNum
-                        ? 'bg-primary-600 text-white'
-                        : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800/90 dark:border-gray-600 dark:text-gray-300'
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
+                  pageNum <= pagination.pages && (
+                    <button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className="px-3 py-2 text-sm font-medium rounded-lg text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800/90 dark:border-gray-600 dark:text-gray-300"
+                    >
+                      {pageNum}
+                    </button>
+                  )
                 );
               })}
-              
+
+              {/* Вперёд */}
               <button
                 onClick={() => handlePageChange(filters.page + 1)}
                 disabled={filters.page === pagination.pages}
-                className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800/90 dark:border-gray-600 dark:text-gray-300"
+                className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800/90 dark:text-gray-300 dark:border-gray-600"
               >
                 {t('next')}
               </button>
             </div>
           )}
+
         </>
       ) : (
         <div className="text-center py-16">
