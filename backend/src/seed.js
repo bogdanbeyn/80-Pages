@@ -176,20 +176,20 @@ async function main() {
 
     console.log('✅ Страницы созданы');
 
-    // // создаем комментарии
-    // const pages = await prisma.page.findMany({ take: 5 });
+    // создаем комментарии
+    const pages = await prisma.page.findMany({ take: 5 });
     
-    // for (const page of pages) {
-    //   await prisma.comment.create({
-    //     data: {
-    //       text: 'Отличная статья о ${page.title}! Очень интересно и познавательно.',
-    //       pageId: page.id,
-    //       userId: user.id
-    //     }
-    //   });
-    // }
+    for (const page of pages) {
+      await prisma.comment.create({
+        data: {
+          text: 'Отличная статья о ${page.title}! Очень интересно и познавательно.',
+          pageId: page.id,
+          userId: user.id
+        }
+      });
+    }
 
-    // console.log('Комментарии созданы');
+    console.log('Комментарии созданы');
 
     console.log('База данных успешно заполнена!');
     // console.log('Администратор: admin@example.com / password123');

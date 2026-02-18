@@ -90,7 +90,7 @@ const translations = {
     backToTests: 'Вернуться к Тестам',
     yourResult: 'Ваш результат',
     thanksForTest: 'Спасибо за прохождение теста',
-    redirectMessage: 'Вы будете автоматически еренаправлены через 10 секунд',
+    redirectMessage: 'Вы будете автоматически перенаправлены через 10 секунд',
     addTest: 'Добавить тест',
     createTestTitle: 'Добавление теста',
     testTitle: 'Название теста',

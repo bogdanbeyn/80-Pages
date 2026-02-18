@@ -147,9 +147,10 @@ const CommentList = ({ comments, pageId, onCommentAdded }) => {
   return (
     <div className="space-y-6">
       {comments.map((comment) => (
+        (comment.parentId ? '' :
         <div key={comment.id} className="border-b border-gray-100 pb-6 last:border-b-0">
           <CommentItem comment={comment} />
-        </div>
+        </div>)
       ))}
     </div>
   );
